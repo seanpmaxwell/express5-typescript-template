@@ -3,7 +3,6 @@ import { ValidationErr } from '@src/common/classes';
 
 type TReqObj = Record<string, unknown>;
 
-
 /**
  * Check that param/s is a string
  */
@@ -91,10 +90,15 @@ function isValid<T>(
   param: string,
   validatorFn: (param: unknown) => param is T,
 ): T {
-  const val = reqObj[param];
-  if (validatorFn(val)) {
-    return val;
-  } else {
+  try {
+    const val = reqObj[param];
+    if (validatorFn(val)) {
+      return val;
+    } else {
+      throw new ValidationErr(param);
+    }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err) {
     throw new ValidationErr(param);
   }
 }
