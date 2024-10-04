@@ -33,6 +33,7 @@
 - When using `dotenvx` in production, you shouldn't use the `.env.keys` file and instead load the key through the command-line:
   - `DOTENV_PRIVATE_KEY_PRODUCTION="ed41c2bdbd4030812eca49efef2f0b42be2d983c01571c0751767e75d5885084" npm run start`
 - See the `dotenvx` docs about encryption: `https://dotenvx.com/docs/quickstart/encryption`.
+- Personally I don't use the encryption feature of dotenvx because it can only encrypt `.env` files and in real world apps I have many file types that need to be encrypted. I put everything in a folder named `vault/` and encrypt it with `git-crypt`. 
 <br/>
 
 🎉 Happy web deving!
