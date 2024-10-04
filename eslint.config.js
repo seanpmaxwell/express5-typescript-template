@@ -1,10 +1,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-const eslint = require('@eslint/js');
-const tseslint = require('typescript-eslint');
-const stylisticTs = require('@stylistic/eslint-plugin-ts');
-const nodePlugin = require('eslint-plugin-n');
+const eslint = require('@eslint/js'),
+  tseslint = require('typescript-eslint'),
+  stylisticTs = require('@stylistic/eslint-plugin-ts'),
+  nodePlugin = require('eslint-plugin-n');
 
 
 module.exports = tseslint.config(

@@ -78,9 +78,7 @@
   "include": [
     "src/**/*.ts",
     "spec/**/*.ts",
-    "scripts",
-    "eslint.config.js",
-    "preload.js"
+    "scripts"
   ],
   "exclude": [
     "src/public/*"
