@@ -4,13 +4,16 @@
   "scripts": {
     "build": "npx ts-node ./scripts/build.ts",
     "clean-install": "rm -rf ./node_modules && rm -r package-lock.json && npm i",
-    "dev": "NODE_ENV=development npx ts-node ./src",
+    "dev": "dotenvx run -f ./env/.env.development -- npx ts-node ./src",
     "dev:hot": "nodemon --exec \"npm run dev\" --watch ./src -e ts",
     "lint": "npx eslint ./src/**/*.ts",
     "lint:tests": "npx eslint ./spec/**/*.ts",
-    "start": "NODE_ENV=production node -r ./preload.js ./dist",
-    "test": "NODE_ENV=test npx ts-node ./spec",
+    "start": "dotenvx run -f ./env/.env.production -- node -r module-alias/register ./dist",
+    "test": "dotenvx run -f ./env/.env.test -- npx ts-node ./spec",
     "test:hot": "nodemon --exec \"npm run test\" --watch ./src --watch ./spec -e ts"
+  },
+  "_moduleAliases": {
+    "@src": "./dist"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -18,7 +21,7 @@
   "dependencies": {
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.13",
-    "dotenv": "^16.4.5",
+    "@dotenvx/dotenvx": "1.14.2",
     "express": "^5.0.0",
     "helmet": "^8.0.0",
     "inserturlparams": "^2.0.4",

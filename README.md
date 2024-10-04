@@ -11,7 +11,7 @@
 - Server: Express5
 - Linting: ESLint
 - Testing: Jamine + Supertest
-- Environment files: Dotenv
+- Environment files: Dotenvx
 - Logging: JetLogger
 - Schema handling: Model-Initializer (zod's too complex and typia doesn't work with ts-node)
 - Dates: DayJs
@@ -26,5 +26,13 @@
 - Run linter: `npm run lint` and `npm run lint:tests`
 - Transpile production code: `npm run build`
 - Start production server: `npm start`
+
+
+## 📃Some notes about the .env files
+- Just to point out I know that the `env/.env.keys` file is not supposed to be committed, but because this is just a demo I decided to include it show how `dotenvx` works.
+- When using `dotenvx` in production, you shouldn't use the `.env.keys` file and instead load the key through the command-line:
+  - `DOTENV_PRIVATE_KEY_PRODUCTION="ed41c2bdbd4030812eca49efef2f0b42be2d983c01571c0751767e75d5885084" npm run start`
+- See the `dotenvx` docs about encryption: `https://dotenvx.com/docs/quickstart/encryption`.
+
 
 🎉 Happy web deving!
