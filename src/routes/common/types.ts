@@ -5,4 +5,4 @@ import { Response, Request } from 'express';
 
 type TObj = Record<string, unknown>;
 export type IReq = Request<TObj, void, TObj, TObj>;
-export type IRes = Response<unknown, TObj>
+export type IRes = Response<unknown, TObj>;
