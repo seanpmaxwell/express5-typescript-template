@@ -1,4 +1,3 @@
-/* eslint-disable n/no-unpublished-import */
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import stylisticTs from '@stylistic/eslint-plugin-ts';
@@ -10,6 +9,13 @@ export default tseslint.config(
   nodePlugin.configs['flat/recommended-script'],
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
+  { 
+    ignores: [
+      '**/node_modules/*',
+      '**/*.mjs',
+      '**/*.js',
+    ],
+  },
   {
     languageOptions: {
       parserOptions: {
@@ -25,7 +31,6 @@ export default tseslint.config(
   },
   {
     files: ['**/*.ts'],
-    ignores: ['**/*.js'],
     rules: {
       '@typescript-eslint/explicit-member-accessibility': 'warn',
       '@typescript-eslint/no-misused-promises': 0,

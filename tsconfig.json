@@ -78,8 +78,7 @@
   "include": [
     "src/**/*.ts",
     "spec/**/*.ts",
-    "scripts",
-    "eslint.config.mjs"
+    "scripts"
   ],
   "exclude": [
     "src/public/*"
