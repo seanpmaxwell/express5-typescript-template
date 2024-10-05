@@ -1,3 +1,4 @@
+/* eslint-disable n/no-unpublished-import */
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import stylisticTs from '@stylistic/eslint-plugin-ts';
