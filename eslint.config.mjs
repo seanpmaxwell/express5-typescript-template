@@ -1,13 +1,10 @@
-/* eslint-disable */
-// @ts-nocheck
-
-const eslint = require('@eslint/js'),
-  tseslint = require('typescript-eslint'),
-  stylisticTs = require('@stylistic/eslint-plugin-ts'),
-  nodePlugin = require('eslint-plugin-n');
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import stylisticTs from '@stylistic/eslint-plugin-ts';
+import nodePlugin from 'eslint-plugin-n';
 
 
-module.exports = tseslint.config(
+export default tseslint.config(
   eslint.configs.recommended,
   nodePlugin.configs['flat/recommended-script'],
   ...tseslint.configs.strictTypeChecked,
@@ -51,5 +48,5 @@ module.exports = tseslint.config(
       'n/no-missing-import': 0,
       'n/no-unpublished-import': 0
     },
-  }
+  },
 )
