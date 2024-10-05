@@ -29,8 +29,8 @@ export default tseslint.config(
       '@stylistic/ts': stylisticTs,
     }
   },
+  { files: ['**/*.ts'] },
   {
-    files: ['**/*.ts'],
     rules: {
       '@typescript-eslint/explicit-member-accessibility': 'warn',
       '@typescript-eslint/no-misused-promises': 0,
