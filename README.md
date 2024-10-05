@@ -20,7 +20,8 @@
 
 
 ## ✅ Available Commands
-- Run development server: `npm run dev` or `npm run dev:hot`
+- Run development server: `npm run dev`
+- Ren development server with hot-reloading: `npm run dev:hot` (Note this uses the `--swc` flag for performance so it won't print out type errors but that's what the linter is for)
 - Run all unit-tests: `npm test` or `npm run test:hot`
 - Run a single unit-test: `npm test -- "name of test file" (i.e. users).`
 - Run linter: `npm run lint` and `npm run lint:tests`
