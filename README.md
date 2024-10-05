@@ -21,12 +21,13 @@
 
 ## ✅ Available Commands
 - Run development server: `npm run dev`
-- Ren development server with hot-reloading: `npm run dev:hot` (Note this uses the `--swc` flag for performance so it won't print out type errors but that's what the linter is for)
+- Ren development server with hot-reloading: `npm run dev:hot`
 - Run all unit-tests: `npm test` or `npm run test:hot`
 - Run a single unit-test: `npm test -- "name of test file" (i.e. users).`
 - Run linter: `npm run lint` and `npm run lint:tests`
 - Transpile production code: `npm run build`
 - Start production server: `npm start`
+- Note that for the two hot-reloading commands the `--swc` flag is used for performance so it won't print out type errors but that's what the linter is for :)
 
 
 ## 📃Some notes about the .env files

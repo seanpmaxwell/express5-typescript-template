@@ -10,7 +10,7 @@
     "lint:tests": "npx eslint ./spec/**/*.ts",
     "start": "dotenvx run -f ./env/.env.production -- node -r module-alias/register ./dist",
     "test": "dotenvx run -f ./env/.env.test -- npx ts-node ./spec",
-    "test:hot": "nodemon --exec \"npm run test\" --watch ./src --watch ./spec -e ts"
+    "test:hot": "dotenvx run -f ./env/.env.test -- nodemon --exec \"ts-node --swc ./spec\" --watch ./src --watch ./spec -e ts"
   },
   "_moduleAliases": {
     "@src": "./dist"
