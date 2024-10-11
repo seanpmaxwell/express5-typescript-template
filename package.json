@@ -28,7 +28,7 @@
     "jet-logger": "^2.0.1",
     "jet-paths": "^1.0.9",
     "jsonfile": "^6.1.0",
-    "model-initializer": "^1.6.0",
+    "model-initializer": "^1.6.1",
     "module-alias": "^2.2.3",
     "morgan": "^1.10.0"
   },
