@@ -2,14 +2,14 @@
   "name": "express5-typescript-template",
   "version": "0.0.0",
   "scripts": {
-    "build": "npx ts-node ./scripts/build.ts",
+    "build": "ts-node ./scripts/build.ts",
     "clean-install": "rm -rf ./node_modules && rm -r package-lock.json && npm i",
-    "dev": "dotenvx run -f ./env/.env.development -- npx ts-node ./src",
+    "dev": "dotenvx run -f ./env/.env.development -- ts-node ./src",
     "dev:hot": "dotenvx run -f ./env/.env.development -- nodemon --exec \"ts-node --swc ./src\" --watch ./src -e ts",
-    "lint": "npx eslint ./src",
-    "lint:tests": "npx eslint ./spec",
+    "lint": "eslint ./src",
+    "lint:tests": "eslint ./spec",
     "start": "dotenvx run -f ./env/.env.production -- node -r module-alias/register ./dist",
-    "test": "dotenvx run -f ./env/.env.test -- npx ts-node ./spec",
+    "test": "dotenvx run -f ./env/.env.test -- ts-node ./spec",
     "test:hot": "dotenvx run -f ./env/.env.test -- nodemon --exec \"ts-node --swc ./spec\" --watch ./src --watch ./spec -e ts"
   },
   "_moduleAliases": {
