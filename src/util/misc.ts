@@ -1,9 +1,4 @@
 /**
- * Miscellaneous shared functions go here.
- */
-
-
-/**
  * Get a random number between 1 and 1,000,000,000,000
  */
 export function getRandomInt(): number {
