@@ -3,7 +3,7 @@ import UserService from '@src/services/UserService';
 import User from '@src/models/User';
 
 import { IReq, IRes } from './common/types';
-import check from './common/check';
+import check, { checkNum } from './common/check';
 
 
 // **** Functions **** //
@@ -20,7 +20,7 @@ async function getAll(_: IReq, res: IRes) {
  * Add one user.
  */
 async function add(req: IReq, res: IRes) {
-  const user = check.isValid(req.body, 'user', User.isValid);
+  const user = check(req.body, 'user', User.isValid);
   await UserService.addOne(user);
   res.status(HttpStatusCodes.CREATED).end();
 }
@@ -29,7 +29,7 @@ async function add(req: IReq, res: IRes) {
  * Update one user.
  */
 async function update(req: IReq, res: IRes) {
-  const user = check.isValid(req.body, 'user', User.isValid);
+  const user = check(req.body, 'user', User.isValid);
   await UserService.updateOne(user);
   res.status(HttpStatusCodes.OK).end();
 }
@@ -38,7 +38,7 @@ async function update(req: IReq, res: IRes) {
  * Delete one user.
  */
 async function delete_(req: IReq, res: IRes) {
-  const id = check.isNum(req.params, 'id');
+  const id = checkNum(req.params, 'id');
   await UserService.delete(id);
   res.status(HttpStatusCodes.OK).end();
 }

@@ -1,147 +1,110 @@
-import { ValidationErr } from '@src/common/classes';
+
+import { RouteError, ValidationErr } from '@src/common/classes';
+import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import { isStr, isUndef, isNum, isBool } from '@src/util/type-checks';
 
 
-type TReqObj = Record<string, unknown>;
+// **** Types **** //
 
-/**
- * Check that param/s is a string
- */
-function isStr(reqObj: TReqObj, params: string): string;
-function isStr(reqObj: TReqObj, params: readonly string[]): string[];
-function isStr(
-  reqObj: TReqObj,
-  params: string | readonly string[],
-): string | string[] {
-  return _checkWrapper(reqObj, params, _checkStr);
-}
+// Arguments
+type TObj = Record<string, unknown>;
+type TVldrFn<T> = (param: unknown) => param is T;
+type TProps = string | readonly string[];
 
-/**
- * Check validator for string
- */
-function _checkStr(val: unknown): string | undefined {
-  if (!!val && typeof val === 'string') {
-    return val;
-  } else {
-    return undefined;
-  }
-}
+// Return
+type TOpt<T, O> = O extends undefined ? T : O extends true ? T | undefined : T;
+type TRet<P, T, O> = P extends readonly string[] ? TOpt<T[], O> : TOpt<T, O>;
+
+
+// **** Main "check" Function **** //
 
 /**
- * Check that param/s is a number.
+ * Accept a property or an array of values, and run them against a validator
+ * function. If it passes, then return the values.
  */
-function isNum(reqObj: TReqObj, params: string): number;
-function isNum(reqObj: TReqObj, params: readonly string[]): number[];
-function isNum(
-  reqObj: TReqObj,
-  params: string | readonly string[],
-): number | number[] {
-  return _checkWrapper(reqObj, params, _checkNum);
-}
-
-/**
- * Check validator for string
- */
-function _checkNum(val: unknown): number | undefined {
-  const valF = Number(val);
-  if (!isNaN(valF)) {
-    return valF;
-  } else {
-    return undefined;
-  }
-}
-
-/**
- * Check that param/s is a number
- */
-function isBool(reqObj: TReqObj, params: string): boolean;
-function isBool(reqObj: TReqObj, params: readonly string[]): boolean[];
-function isBool(
-  reqObj: TReqObj,
-  params: string | readonly string[],
-): boolean | boolean[] {
-  return _checkWrapper(reqObj, params, _checkBool);
-}
-
-/**
- * Check validator for string
- */
-function _checkBool(val: unknown): boolean | undefined {
-  if (typeof val === 'boolean') {
-    return val;
-  } else if (typeof val === 'string') {
-    val = val.toLowerCase();
-    if (val === 'true') {
-      return true;
-    } else if (val === 'false') {
-      return false;
-    } else {
-      return undefined;
-    }
-  } else {
-    return undefined;
-  }
-}
-
-/**
- * Check that param satisfies the validator function.
- */
-function isValid<T>(
-  reqObj: TReqObj,
-  param: string,
-  validatorFn: (param: unknown) => param is T,
-): T {
-  try {
-    const val = reqObj[param];
-    if (validatorFn(val)) {
-      return val;
-    } else {
-      throw new ValidationErr(param);
-    }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (err) {
-    throw new ValidationErr(param);
-  }
-}
-
-
-// **** Shared Helpers **** //
-
-/**
- * Do stuff based on whether or not params is an array
- */
-function _checkWrapper<T>(
-  reqObj: TReqObj,
-  params: string | readonly string[],
-  checkFn: (val: unknown) => T | undefined,
-): T | T[] {
-  // If is array
-  if (params instanceof Array) {
-    const retVal: T[] = [];
-    for (const param of params) {
-      const val = checkFn(reqObj[param]);
-      if (val !== undefined) {
-        retVal.push(val);
+function check<T, P extends TProps, O extends boolean | undefined = undefined>(
+  argObj: TObj,
+  props: P,
+  vldrFn: TVldrFn<T>,
+  parse?: boolean,
+  isOptional?: O,
+): TRet<P, T, O> {
+  // Clone object so we don't modify "IReq"
+  const obj = { ...argObj };
+  // If props is an array
+  let retVal;
+  if (props instanceof Array) {
+    const arr = [];
+    for (const prop of props) {
+      let val = obj[prop];
+      if (isUndef(val)) {
+        if (isOptional) {
+          continue;
+        } else {
+          throw new ValidationErr(prop);
+        }
+      }
+      if (isStr(val) && parse) {
+        val = JSON.parse(val);
+      }
+      if (_wrapVldrFn(vldrFn, val)) {
+        arr.push(val);
       } else {
-        throw new ValidationErr(param);
+        throw new ValidationErr(prop);
       }
     }
-    return retVal;
+    retVal = arr;
   }
-  // If not an array
-  const val = checkFn(reqObj[params]);
-  if (val !== undefined) {
-    return val;
+  // If props is a string
+  if (isStr(props)) {
+    let val = obj[props];
+    if (isUndef(val) && !isOptional) {
+      throw new ValidationErr(props);
+    }
+    if (isStr(val) && parse) {
+      val = JSON.parse(val);
+    }
+    if (_wrapVldrFn(vldrFn, val)) {
+      retVal = val;
+    } else {
+      throw new ValidationErr(props);
+    }
   }
-  // Throw error
-  throw new ValidationErr(params);
+  // Return
+  return retVal as TRet<P, T, O>;
+}
+
+/**
+ * Some validator functions may throw errors. So we can throw the error 
+ * from our check function we wrap it in a try/catch block.
+ */
+function _wrapVldrFn<T>(
+  fn: ((arg: unknown) => arg is T),
+  val: unknown,
+): val is T {
+  try {
+    return fn(val);
+  } catch (err) {
+    let errStr;
+    if (err instanceof Error) {
+      errStr = err.message;
+    } else if (isStr(err)) {
+      errStr = err;
+    } else {
+      errStr = JSON.stringify(err);
+    }
+    throw new RouteError(HttpStatusCodes.BAD_REQUEST, errStr);
+  }
 }
 
 
-// **** Export Default **** //
+// **** Export **** //
+/* eslint-disable max-len */
 
-export default {
-  isStr,
-  isNum,
-  isBool,
-  isValid,
-} as const;
+// Hardcode Some Frequently used ones
+export const checkBool = <P extends TProps>(obj: TObj, props: P) => check(obj, props, isBool, true);
+export const checkNum = <P extends TProps>(obj: TObj, props: P) => check(obj, props, isNum, true);
+export const checkStr = <P extends TProps>(obj: TObj, props: P) => check(obj, props, isStr);
+
+// "check"
+export default check;
