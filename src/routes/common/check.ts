@@ -19,8 +19,9 @@ type TRet<P, T, O> = P extends readonly string[] ? TOpt<T[], O> : TOpt<T, O>;
 // **** Main "check" Function **** //
 
 /**
- * Accept a property or an array of values, and run them against a validator
- * function. If it passes, then return the values.
+ * Accept a property or an array of properties and run them against a validator
+ * function. If it passes, then return the value/s. If "null" is provided as a 
+ * property, "check()" will use the entire object as a value.
  */
 function check<T, P extends TProps, O extends boolean | undefined = undefined>(
   argObj: TObj,
@@ -29,7 +30,7 @@ function check<T, P extends TProps, O extends boolean | undefined = undefined>(
   parse?: boolean,
   isOptional?: O,
 ): TRet<P, T, O> {
-  // Clone object so we don't modify "IReq"
+  // Create a shallow clone so we don't modify IReq.
   const obj = { ...argObj };
   // If props is an array
   let retVal;
@@ -55,11 +56,11 @@ function check<T, P extends TProps, O extends boolean | undefined = undefined>(
     }
     retVal = arr;
   }
-  // If props is a string
-  if (isStr(props)) {
-    let val = obj[props];
+  // If props is a string or undefined
+  if (isStr(props) || props === null) {
+    let val = isStr(props) ? obj[props] : obj;
     if (isUndef(val) && !isOptional) {
-      throw new ValidationErr(props);
+      throw new ValidationErr(props ?? 'null');
     }
     if (isStr(val) && parse) {
       val = JSON.parse(val);
@@ -67,7 +68,7 @@ function check<T, P extends TProps, O extends boolean | undefined = undefined>(
     if (_wrapVldrFn(vldrFn, val)) {
       retVal = val;
     } else {
-      throw new ValidationErr(props);
+      throw new ValidationErr(props ?? 'null');
     }
   }
   // Return
