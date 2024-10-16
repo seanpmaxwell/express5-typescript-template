@@ -13,7 +13,7 @@
 - Testing: Jamine + Supertest
 - Environment files: Dotenvx
 - Logging: JetLogger
-- Schema handling: Model-Initializer (zod's too complex and typia doesn't work with ts-node)
+- Schema handling: TypeBox for schema validation
 - Dates: DayJs
 - Hot Reloading: Nodemon
 - Some front-end stuff: handlebars and bootstrap
