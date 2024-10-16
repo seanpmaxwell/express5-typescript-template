@@ -1,20 +1,19 @@
-import { Type, type Static } from '@sinclair/typebox';
-import { Value } from '@sinclair/typebox/value';
+import MI from 'model-initializer';
 
 
-export type IUser = Static<typeof UserSchema>;
+export interface IUser {
+  id: number;
+  name: string;
+  email: string;
+  created: Date;
+}
 
-const UserSchema = Type.Object({                              
-  id: Type.Number({ default: -1 }),                                  
-  name: Type.String(),
-  email: Type.String({ format: 'email '}),
-  created: Type.Date(),
+const User = MI.init<IUser>({
+  id: 'pk',
+  name: 'str',
+  email: 'email',
+  created: 'date',
 });
 
 
-// **** Export default **** //
-
-export default {
-  new: (arg?: Partial<IUser>) => Value.Parse(UserSchema, arg),
-  isValid: (arg: unknown) => Value.Check(UserSchema, arg),
-};
+export default User;

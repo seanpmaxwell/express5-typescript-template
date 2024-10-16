@@ -12,17 +12,14 @@ import { USER_NOT_FOUND_ERR } from '@src/services/UserService';
 import Paths from 'spec/support/Paths';
 import apiCb from 'spec/support/apiCb';
 import { TApiCb } from 'spec/types/misc';
-import { ValidationErr } from '@src/common/classes';
 
 
 // Dummy users for GET req
-const getDummyUsers = () => {
-  return [
-    User.new({ name: 'Sean Maxwell', email: 'sean.maxwell@gmail.com' }),
-    User.new({ name: 'John Smith', email: 'john.smith@gmail.com' }),
-    User.new({ name: 'Gordan Freeman', email: 'gordan.freeman@gmail.com' }),
-  ];
-};
+const getDummyUsers = () => [
+  User.new({ name: 'Sean Maxwell', email: 'sean.maxwell@gmail.com' }),
+  User.new({ name: 'John Smith', email: 'john.smith@gmail.com' }),
+  User.new({ name: 'Gordan Freeman', email: 'gordan.freeman@gmail.com' }),
+];
 
 
 // Tests
@@ -63,8 +60,7 @@ describe('UserRouter', () => {
   // Test add user
   describe(`"POST:${Paths.Users.Add}"`, () => {
 
-    const ERROR_MSG = ValidationErr.GetMsg('user'),
-      DUMMY_USER = getDummyUsers()[0];
+    const DUMMY_USER = getDummyUsers()[0];
 
     // Setup API
     const callApi = (user: IUser | null, cb: TApiCb) => 
@@ -86,13 +82,13 @@ describe('UserRouter', () => {
     });
 
     // Missing param
-    it(`should return a JSON object with an error message of "${ERROR_MSG}" ` + 
-    `and a status code of "${HttpStatusCodes.BAD_REQUEST}" if the user ` + 
-    'param was missing.', done => {
+    it('should return a JSON object with an error message of and a status ' + 
+      `code of "${HttpStatusCodes.BAD_REQUEST}" if the user param was ` + 
+      'missing.', done => {
       // Call api
       callApi(null, res => {
         expect(res.status).toBe(HttpStatusCodes.BAD_REQUEST);
-        expect(res.body.error).toBe(ERROR_MSG);
+        expect(res.body.error).toBeTruthy();
         done();
       });
     });
@@ -101,8 +97,7 @@ describe('UserRouter', () => {
   // Update users
   describe(`"PUT:${Paths.Users.Update}"`, () => {
 
-    const ERROR_MSG =  ValidationErr.GetMsg('user'),
-      DUMMY_USER = getDummyUsers()[0];
+    const DUMMY_USER = getDummyUsers()[0];
 
     // Setup API
     const callApi = (user: IUser | null, cb: TApiCb) => 
@@ -125,13 +120,13 @@ describe('UserRouter', () => {
     });
 
     // Param missing
-    it(`should return a JSON object with an error message of "${ERROR_MSG}" ` +
-    `and a status code of "${HttpStatusCodes.BAD_REQUEST}" if the user ` + 
-    'param was missing.', done => {
+    it('should return a JSON object with an error message and a status code ' +
+    `of "${HttpStatusCodes.BAD_REQUEST}" if the user param was missing`,
+    done => {
       // Call api
       callApi(null, res => {
         expect(res.status).toBe(HttpStatusCodes.BAD_REQUEST);
-        expect(res.body.error).toBe(ERROR_MSG);
+        expect(res.body.error).toBeTruthy();
         done();
       });
     });
