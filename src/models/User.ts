@@ -11,7 +11,10 @@ export interface IUser {
 const User = MI.init<IUser>({
   id: 'pk',
   name: 'str',
-  email: 'email',
+  email: {
+    type: 'str',
+    format: 'email',
+  },
   created: 'date',
 });
 
