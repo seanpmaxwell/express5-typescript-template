@@ -13,7 +13,7 @@
 - Testing: Jamine + Supertest
 - Environment files: Dotenvx
 - Logging: JetLogger
-- Schema handling: Model-Initializer for schema validation
+- Schema handling: Zod for schema validation
 - Dates: DayJs
 - Hot Reloading: Nodemon
 - Some front-end stuff: handlebars and bootstrap
