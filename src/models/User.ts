@@ -20,3 +20,5 @@ export default {
   new: (arg?: Partial<IUser>) => User.parse(arg),
   isValid: (arg: unknown): arg is IUser => !!User.parse(arg),
 } as const;
+
+// console.log(User.shape.address.parse({ ass: 'sdf' }));
