@@ -11,11 +11,10 @@
 - Server: Express5
 - Linting: ESLint
 - Testing: Jamine + Supertest
-- Environment files: Dotenvx
+- Running typescript files: tsx
 - Logging: JetLogger
 - Schema handling: Zod for schema validation
 - Dates: DayJs
-- Hot Reloading: Nodemon
 - Some front-end stuff: handlebars and bootstrap
 
 
@@ -25,8 +24,8 @@
 - Run all unit-tests: `npm test` or `npm run test:hot`
 - Run a single unit-test: `npm test -- "name of test file" (i.e. users).`
 - Run linter: `npm run lint` and `npm run lint:tests`
+- Check for type errors (tsx does not do this): `npm run type-check`.
 - Transpile production code: `npm run build`
 - Start production server: `npm start`
-- Note that for the two hot-reloading commands the `--swc` flag is used for performance so it won't print out type errors but that's what the linter is for :)
 
 🎉 Happy web deving!
