@@ -26,7 +26,7 @@ export default tseslint.config(
   {
     plugins: {
       '@stylistic/ts': stylisticTs,
-    }
+    },
   },
   { files: ['**/*.ts'] },
   {
@@ -36,12 +36,14 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 0,
       '@typescript-eslint/no-confusing-void-expression': 0,
       '@typescript-eslint/no-unnecessary-condition': 0,
-      '@typescript-eslint/restrict-template-expressions': [ 'error', { allowNumber: true }],
+      '@typescript-eslint/restrict-template-expressions': [
+        'error', { allowNumber: true },
+      ],
       'max-len': [
         'warn',
         {
-          'code': 80
-        }
+          'code': 80,
+        },
       ],
       '@stylistic/ts/semi': ['warn'],
       'comma-dangle': ['warn', 'always-multiline'],
@@ -51,7 +53,7 @@ export default tseslint.config(
       'quotes': ['warn', 'single'],
       'n/no-process-env': 1,
       'n/no-missing-import': 0,
-      'n/no-unpublished-import': 0
+      'n/no-unpublished-import': 0,
     },
   },
-)
+);
