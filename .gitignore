@@ -2,4 +2,5 @@
 dist/
 temp/
 **/**/*.log
-./config.js
+
+config.js
