@@ -1,26 +1,29 @@
 {
   "compilerOptions": {
-    "strict": true,                           
-    "baseUrl": "./",                       
+    "target": "es6",                          
+    "module": "commonjs",                     
+    "strict": true,
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "esModuleInterop": true,                 
     "skipLibCheck": true,                     
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@src/*": [
-        "src/*"
-      ],
+      "@src/*": ["src/*"]
     },
-    "useUnknownInCatchVariables": false,
-    // Settings recommended by the tsx docs
-		"moduleDetection": "force",
-		"module": "Preserve",
-		"resolveJsonModule": true,
-		"allowJs": true,
-		"esModuleInterop": true,
-		"isolatedModules": true,
+    "useUnknownInCatchVariables": false
+  },
+  "ts-node": {
+    "swc": true,
+    "require": [
+      "tsconfig-paths/register",
+      "./config.ts"
+    ],
   },
   "include": [
     "src/**/*.ts",
     "spec/**/*.ts",
+    "config.ts",
     "scripts"
   ],
   "exclude": [

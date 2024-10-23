@@ -1,22 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es6", 
-    "module": "commonjs",
-    "outDir": "dist",
+   "target": "es6",                          
+    "module": "commonjs",                     
     "strict": true,
+    "moduleResolution": "node",
     "baseUrl": "./",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
+    "outDir": "temp",
+    "esModuleInterop": true,                 
+    "skipLibCheck": true,                     
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@src/*": [
-        "src/*"
-      ],
+      "@src/*": ["src/*"]
     },
     "useUnknownInCatchVariables": false,
     "sourceMap": false,
     "removeComments": true
   },
+  "include": [
+    "src/**/*.ts",
+    "config.ts"
+  ],
   "exclude": [
     "spec",
     "src/public/",

@@ -1,5 +1,8 @@
 # 🚀 Express5 Typescript Template
 - Demo the latest version of ExpressJS (v5) with Typescript and the new "flat" configuration for ESlint.
+- Note the there are git two branches of this:
+  - `master`: uses nodemon, dotenv, swc, and ts-node
+  - `setup_using_tsx`: replace all the above with tsx
 
 
 ## 📁 Background
@@ -11,7 +14,9 @@
 - Server: Express5
 - Linting: ESLint
 - Testing: Jamine + Supertest
-- Running typescript files: tsx
+- Running typescript files: Ts-node
+- Hot Reloading: Nodemon, Swc/core
+- Environment Variables: Dotenv
 - Logging: JetLogger
 - Schema handling: Zod for schema validation
 - Dates: DayJs
