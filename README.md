@@ -29,9 +29,4 @@
 - Start production server: `npm start`
 - Note that for the two hot-reloading commands the `--swc` flag is used for performance so it won't print out type errors but that's what the linter is for :)
 
-
-## 📃Some notes about the .env files
-- Personally I don't use the encryption feature of dotenvx because it can only encrypt `.env` files and in real world apps I have many file types that need to be encrypted. I put everything in a folder named `vault/` and encrypt it with `git-crypt`. 
-<br/>
-
 🎉 Happy web deving!

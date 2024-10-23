@@ -2,15 +2,16 @@
   "name": "express5-typescript-template",
   "version": "0.0.0",
   "scripts": {
-    "build": "ts-node ./scripts/build.ts",
+    "build": "tsx ./scripts/build.ts",
     "clean-install": "rm -rf ./node_modules && rm -r package-lock.json && npm i",
-    "dev": "dotenvx run -f ./env/.env.development -- ts-node ./src",
-    "dev:hot": "dotenvx run -f ./env/.env.development -- nodemon --exec \"ts-node --swc ./src\" --watch ./src -e ts",
+    "dev": "tsx --env-file=./config/.env.development ./src",
+    "dev:hot": "tsx --env-file=./config/.env.development --watch ./src",
     "lint": "eslint ./src",
     "lint:tests": "eslint ./spec",
-    "start": "dotenvx run -f ./env/.env.production -- node -r module-alias/register ./dist",
-    "test": "dotenvx run -f ./env/.env.test -- ts-node ./spec",
-    "test:hot": "dotenvx run -f ./env/.env.test -- nodemon --exec \"ts-node --swc ./spec\" --watch ./src --watch ./spec -e ts"
+    "start": "node --env-file=./config/.env.production -r module-alias/register ./dist",
+    "test": "tsx --env-file=./config/.env.test ./spec",
+    "test:hot": "tsx --env-file=./config/.env.test --watch ./spec --include ./src",
+    "type-check": "tsc --noEmit"
   },
   "_moduleAliases": {
     "@src": "./dist"
@@ -19,10 +20,9 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "1.14.2",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.13",
-    "express": "^5.0.0",
+    "express": "^5.0.1",
     "helmet": "^8.0.0",
     "inserturlparams": "^2.0.4",
     "jet-logger": "^2.0.1",
@@ -35,7 +35,6 @@
   "devDependencies": {
     "@eslint/js": "^9.11.1",
     "@stylistic/eslint-plugin-ts": "^2.8.0",
-    "@swc/core": "^1.7.26",
     "@types/cookie-parser": "^1.4.7",
     "@types/eslint__js": "^8.42.3",
     "@types/find": "^0.2.4",
@@ -50,10 +49,9 @@
     "find": "^0.3.0",
     "fs-extra": "^11.2.0",
     "jasmine": "^5.3.1",
-    "nodemon": "^3.1.7",
     "supertest": "^7.0.0",
-    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.19.1",
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.8.0"
   }

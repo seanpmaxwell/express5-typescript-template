@@ -20,8 +20,8 @@ jasmine.loadConfig({
 
 // Run all or a single unit-test
 let execResp: Promise<jasmine.JasmineDoneInfo> | undefined;
-if (!!argv[2]) {
-  const testFile = argv[2];
+if (!!argv[4]) {
+  const testFile = argv[4];
   find.file(testFile + '.spec.ts', './spec', (files: string[]) => {
     if (files.length === 1) {
       jasmine.execute([files[0]]);
