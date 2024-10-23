@@ -1,3 +1,5 @@
+type TFunc = (...args: unknown[]) => unknown;
+
 /**
  * Check if a param is undefined.
  */
@@ -42,4 +44,33 @@ export function isDate(val: unknown): val is string | number | Date {
     (isStr(val) || isNum(val) || val instanceof Date) &&
     !isNaN(new Date(val).getTime())
   );
+}
+
+/**
+ * Is an unknown value a string array
+ */
+export function isArr(val: unknown): val is unknown[] {
+  return Array.isArray(val);
+}
+
+/**
+ * See if value is a function type.
+ */
+export function isFn(val: unknown): val is TFunc {
+  return typeof val === 'function';
+}
+
+/**
+ * Transform a value before checking it.
+ */
+export function trans<T>(
+  transformFn: TFunc,
+  cb: ((arg: unknown) => arg is T),
+): typeof cb {
+  return (arg: unknown): arg is T => {
+    if (arg !== undefined) {
+      arg = transformFn(arg);
+    }
+    return cb(arg);
+  };
 }

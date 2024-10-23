@@ -1,9 +1,10 @@
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import UserService from '@src/services/UserService';
 import User from '@src/models/User';
+import { isNum, trans } from '@src/util/type-checks';
 
 import { IReq, IRes } from './common/types';
-import check, { checkNum } from './common/check';
+import check from './common/check';
 
 
 // **** Functions **** //
@@ -38,7 +39,7 @@ async function update(req: IReq, res: IRes) {
  * Delete one user.
  */
 async function delete_(req: IReq, res: IRes) {
-  const id = checkNum(req.params, 'id');
+  const id = check(req.params, 'id', trans(Number, isNum));
   await UserService.delete(id);
   res.status(HttpStatusCodes.OK).end();
 }

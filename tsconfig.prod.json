@@ -1,6 +1,19 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "target": "es6", 
+    "module": "commonjs",
+    "outDir": "dist",
+    "strict": true,
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@src/*": [
+        "src/*"
+      ],
+    },
+    "useUnknownInCatchVariables": false,
     "sourceMap": false,
     "removeComments": true
   },

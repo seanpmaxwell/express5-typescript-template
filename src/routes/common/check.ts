@@ -1,90 +1,56 @@
 
-import { RouteError, ValidationErr } from '@src/common/classes';
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
-import { isStr, isUndef, isNum, isBool } from '@src/util/type-checks';
+import { ValidationErr } from '@src/common/classes';
+import { isStr, isArr, isFn } from '@src/util/type-checks';
 
 
 // **** Types **** //
 
-// Arguments
-type TObj = Record<string, unknown>;
 type TVldrFn<T> = (param: unknown) => param is T;
-type TProps = string | readonly string[];
-
-// Return
-type TOpt<T, O> = O extends undefined ? T : O extends true ? T | undefined : T;
-type TRet<P, T, O> = P extends readonly string[] ? TOpt<T[], O> : TOpt<T, O>;
 
 
 // **** Main "check" Function **** //
 
 /**
- * Accept a property or an array of properties and run them against a validator
- * function. If it passes, then return the value/s. If "null" is provided as a 
- * property, "check()" will use the entire object as a value.
+ * Same as below but works for arrays.
  */
-function check<T, P extends TProps, O extends boolean | undefined = undefined>(
-  argObj: TObj,
-  props: P,
-  vldrFn: TVldrFn<T>,
-  parse?: boolean,
-  isOptional?: O,
-): TRet<P, T, O> {
-  // Create a shallow clone so we don't modify IReq.
-  const obj = { ...argObj };
-  // If props is an array
-  let retVal;
-  if (props instanceof Array) {
-    const arr = [];
-    for (const prop of props) {
-      let val = obj[prop];
-      if (isUndef(val)) {
-        if (isOptional) {
-          continue;
-        } else {
-          throw new ValidationErr(prop);
+export function checkArr<T>(
+  argObj: Record<string, unknown>,
+  propOrFn: TVldrFn<T>,
+): T[];
+export function checkArr<T>(
+  argObj: Record<string, unknown>,
+  propOrFn: string,
+  fn: TVldrFn<T>,
+): T[];
+export function checkArr<T>(
+  argObj: Record<string, unknown>,
+  propOrFn: string | TVldrFn<T>,
+  fn?: TVldrFn<T>,
+): T[] {
+  try {
+    // Init
+    let val,
+      propName = 'object',
+      vldrFn;
+    if (isStr(propOrFn)) {
+      val = argObj[propOrFn];
+      propName = propOrFn;
+      vldrFn = fn;
+    } else if (isFn(propOrFn)) {
+      vldrFn = propOrFn;
+    }
+    // Run checks
+    if (isArr(val)) {
+      for (const item of val) {
+        if (!vldrFn?.(item)) {
+          throw new ValidationErr(propName);
         }
       }
-      if (isStr(val) && parse) {
-        val = JSON.parse(val);
-      }
-      if (_wrapVldrFn(vldrFn, val)) {
-        arr.push(val);
-      } else {
-        throw new ValidationErr(prop);
-      }
-    }
-    retVal = arr;
-  }
-  // If props is a string or undefined
-  if (isStr(props) || props === null) {
-    let val = isStr(props) ? obj[props] : obj;
-    if (isUndef(val) && !isOptional) {
-      throw new ValidationErr(props ?? 'null');
-    }
-    if (isStr(val) && parse) {
-      val = JSON.parse(val);
-    }
-    if (_wrapVldrFn(vldrFn, val)) {
-      retVal = val;
+      return val as T[];
     } else {
-      throw new ValidationErr(props ?? 'null');
+      throw new ValidationErr(propName);
     }
-  }
-  // Return
-  return retVal as TRet<P, T, O>;
-}
-
-/**
- * Some validator functions may throw errors. So we can throw the error 
- * from our check function we wrap it in a try/catch block.
- */
-function _wrapVldrFn<T>(
-  fn: ((arg: unknown) => arg is T),
-  val: unknown,
-): val is T {
-  try {
-    return fn(val);
+  // Wrap errors
   } catch (err) {
     let errStr;
     if (err instanceof Error) {
@@ -92,20 +58,62 @@ function _wrapVldrFn<T>(
     } else if (isStr(err)) {
       errStr = err;
     } else {
-      errStr = JSON.stringify(err);
+      errStr = String(err);
     }
-    throw new RouteError(HttpStatusCodes.BAD_REQUEST, errStr);
+    throw new ValidationErr(errStr);
+  }
+}
+
+/**
+ * Extract a property or from and object and run them against a validator 
+ * function.
+ */
+function check<T>(
+  argObj: Record<string, unknown>,
+  propOrFn: TVldrFn<T>,
+): T;
+function check<T>(
+  argObj: Record<string, unknown>,
+  propOrFn: string,
+  fn: TVldrFn<T>,
+): T;
+function check<T>(
+  argObj: Record<string, unknown>,
+  propOrFn: string | TVldrFn<T>,
+  fn?: TVldrFn<T>,
+): T {
+  try {
+    // Init
+    let val,
+      propName = 'object',
+      vldrFn;
+    if (isStr(propOrFn)) {
+      val = argObj[propOrFn];
+      propName = propOrFn;
+      vldrFn = fn;
+    } else if (isFn(propOrFn)) {
+      vldrFn = propOrFn;
+    }
+    // Run check
+    if (vldrFn?.(val)) {
+      return val;
+    } else {
+      throw new ValidationErr(propName);
+    }
+  } catch (err) {
+    let errStr;
+    if (err instanceof Error) {
+      errStr = err.message;
+    } else if (isStr(err)) {
+      errStr = err;
+    } else {
+      errStr = String(err);
+    }
+    throw new ValidationErr(errStr);
   }
 }
 
 
-// **** Export **** //
-/* eslint-disable max-len */
+// **** Export Default **** //
 
-// Hardcode Some Frequently used ones
-export const checkBool = <P extends TProps>(obj: TObj, props: P) => check(obj, props, isBool, true);
-export const checkNum = <P extends TProps>(obj: TObj, props: P) => check(obj, props, isNum, true);
-export const checkStr = <P extends TProps>(obj: TObj, props: P) => check(obj, props, isStr);
-
-// "check"
 export default check;
