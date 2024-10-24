@@ -38,6 +38,7 @@ export function checkArr<T>(
       vldrFn = fn;
     } else if (isFn(propOrFn)) {
       vldrFn = propOrFn;
+      val = argObj;
     }
     // Run checks
     if (isArr(val)) {
@@ -92,6 +93,7 @@ function check<T>(
       propName = propOrFn;
       vldrFn = fn;
     } else if (isFn(propOrFn)) {
+      val = argObj;
       vldrFn = propOrFn;
     }
     // Run check
