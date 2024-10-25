@@ -16,9 +16,9 @@
 - Testing: Jamine + Supertest
 - Running typescript files: Ts-node
 - Hot Reloading: Nodemon, Swc/core
-- Environment Variables: Dotenv
+- Environment variables: Dotenv
 - Logging: JetLogger
-- Schema handling: Zod for schema validation
+- Schema validation: Jet-Schema
 - Dates: DayJs
 - Some front-end stuff: handlebars and bootstrap
 

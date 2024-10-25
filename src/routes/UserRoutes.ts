@@ -21,7 +21,7 @@ async function getAll(_: IReq, res: IRes) {
  * Add one user.
  */
 async function add(req: IReq, res: IRes) {
-  const user = check(req.body, 'user', User.isValid);
+  const user = check(req.body, 'user', User.test);
   await UserService.addOne(user);
   res.status(HttpStatusCodes.CREATED).end();
 }
@@ -30,7 +30,7 @@ async function add(req: IReq, res: IRes) {
  * Update one user.
  */
 async function update(req: IReq, res: IRes) {
-  const user = check(req.body, 'user', User.isValid);
+  const user = check(req.body, 'user', User.test);
   await UserService.updateOne(user);
   res.status(HttpStatusCodes.OK).end();
 }

@@ -27,10 +27,10 @@
     "inserturlparams": "^2.0.4",
     "jet-logger": "^2.0.1",
     "jet-paths": "^1.0.9",
+    "jet-schema": "^1.0.4",
     "jsonfile": "^6.1.0",
     "module-alias": "^2.2.3",
-    "morgan": "^1.10.0",
-    "zod": "^3.23.8"
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

@@ -1,24 +1,21 @@
-import { z } from 'zod';
+import schema from '@src/util/schema';
+import { isNum, isStr } from '@src/util/type-checks';
 
 
-export interface IUser extends z.infer<typeof User> {
-  horse?: string;
+export interface IUser {
+  id: number;
+  name: string;
+  email: string;
+  created: Date;
+  address?: { street: string };
 }
 
-const User = z.object({
-  id: z.number().default(-1),
-  name: z.string().default(''),
-  email: z.string().email().or(z.literal('')).default(''),
-  // eslint-disable-next-line max-len
-  created: z.preprocess((arg => arg === undefined ? new Date() : arg), z.coerce.date()),
-  address: z.object({ 
-    street: z.string(),
-  }).optional(),
+export default schema<IUser>({
+  id: isNum,
+  name: isStr,
+  created: Date,
+  email: isStr,
+  address: schema({
+    street: isStr,
+  }, true),
 });
-
-export default {
-  new: (arg?: Partial<IUser>) => User.parse(arg),
-  isValid: (arg: unknown): arg is IUser => !!User.parse(arg),
-} as const;
-
-// console.log(User.shape.address.parse({ ass: 'sdf' }));
