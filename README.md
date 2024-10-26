@@ -33,4 +33,17 @@
 - Transpile production code: `npm run build`
 - Start production server: `npm start`
 
+
+## ⚠️ Important
+
+In `src/server.ts` you gonna wanna remove this on line 37:
+```typescript
+{
+    contentSecurityPolicy: false,
+}
+```
+
+This is not safe but I just did it to get the bootstrap and handlebars javascript files working in the front-end demo content.
+
+
 🎉 Happy web deving!
