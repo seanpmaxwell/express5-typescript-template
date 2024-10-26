@@ -1,6 +1,6 @@
 
 import { ValidationErr } from '@src/common/classes';
-import { isStr, isArr, isFn } from '@src/util/type-checks';
+import { isStr, isFn } from '@src/util/type-checks';
 
 
 // **** Types **** //
@@ -41,7 +41,7 @@ export function checkArr<T>(
       val = argObj;
     }
     // Run checks
-    if (isArr(val)) {
+    if (Array.isArray(val)) {
       for (const item of val) {
         if (!vldrFn?.(item)) {
           throw new ValidationErr(propName);

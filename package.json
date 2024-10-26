@@ -7,13 +7,10 @@
     "dev": "NODE_ENV=development ts-node ./src",
     "dev:hot": "nodemon --exec \"npm run dev\" --watch ./src --ext '*'",
     "lint": "eslint --flag unstable_ts_config",
-    "start": "NODE_ENV=production node -r module-alias/register -r ./config.js ./dist",
+    "start": "NODE_ENV=production node -r ./config.js ./dist",
     "test": "NODE_ENV=test ts-node ./spec",
     "test:hot": "nodemon --exec \"npm run test\" --watch ./src --watch ./spec --ext '*'",
     "type-check": "tsc --noEmit"
-  },
-  "_moduleAliases": {
-    "@src": "./dist"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -42,6 +39,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/jasmine": "^5.1.4",
     "@types/jsonfile": "^6.1.4",
+    "@types/module-alias": "^2.0.4",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.7.4",
     "@types/supertest": "^6.0.2",
