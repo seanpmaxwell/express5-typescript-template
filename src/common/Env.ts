@@ -1,8 +1,10 @@
 /* eslint-disable n/no-process-env */
 
+import { NodeEnvs } from './constants';
+
 
 export default {
-  NodeEnv: (process.env.NODE_ENV ?? ''),
+  NodeEnv: (process.env.NODE_ENV ?? '') as NodeEnvs,
   Port: (process.env.PORT ?? 0),
   CookieProps: {
     Key: 'ExpressGeneratorTs',

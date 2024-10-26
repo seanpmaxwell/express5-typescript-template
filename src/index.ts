@@ -1,9 +1,9 @@
 import logger from 'jet-logger';
-import EnvVars from '@src/common/EnvVars';
+import Env from '@src/common/Env';
 import server from './server';
 
 
 const SERVER_START_MSG = ('Express server started on port: ' + 
-  EnvVars.Port.toString());
+  Env.Port.toString());
 
-server.listen(EnvVars.Port, () => logger.info(SERVER_START_MSG));
+server.listen(Env.Port, () => logger.info(SERVER_START_MSG));

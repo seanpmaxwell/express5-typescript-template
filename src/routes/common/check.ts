@@ -5,7 +5,10 @@ import { isStr, isFn } from '@src/util/type-checks';
 
 // **** Types **** //
 
-type TVldrFn<T> = (param: unknown) => param is T;
+type TVldrFn<T> = (
+  arg: unknown,
+  cb?: (val: T) => void,  
+) => arg is T;
 
 
 // **** Main "check" Function **** //
@@ -37,13 +40,13 @@ export function checkArr<T>(
       propName = propOrFn;
       vldrFn = fn;
     } else if (isFn(propOrFn)) {
-      vldrFn = propOrFn;
       val = argObj;
+      vldrFn = propOrFn;
     }
     // Run checks
     if (Array.isArray(val)) {
-      for (const item of val) {
-        if (!vldrFn?.(item)) {
+      for (let i = 0; i < val.length; i++) {
+        if (!vldrFn?.(val[i], (transVal) => val[i] = transVal)) {
           throw new ValidationErr(propName);
         }
       }
@@ -97,7 +100,7 @@ function check<T>(
       vldrFn = propOrFn;
     }
     // Run check
-    if (vldrFn?.(val)) {
+    if (vldrFn?.(val, transVal => val = transVal)) {
       return val;
     } else {
       throw new ValidationErr(propName);

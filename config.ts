@@ -17,5 +17,5 @@ if (!!process.env.NODE_ENV) {
 
 // Configure moduleAlias
 if (__filename.endsWith('js')) {
-  moduleAlias.addAlias('@src', __dirname + '/src');
+  moduleAlias.addAlias('@src', __dirname + '/dist');
 }
