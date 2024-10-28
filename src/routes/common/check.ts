@@ -1,4 +1,3 @@
-
 import { ValidationErr } from '@src/common/classes';
 import { isStr, isFn } from '@src/util/type-checks';
 
