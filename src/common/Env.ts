@@ -4,11 +4,8 @@ import { isEnumVal } from '@src/util/type-checks';
 import { NodeEnvs } from './constants';
 
 
-
-const checkNodeEnv = isEnumVal(NodeEnvs);
-
 export default jetEnv({
-  NodeEnv: (arg): arg is NodeEnvs => checkNodeEnv(arg),
+  NodeEnv: isEnumVal(NodeEnvs),
   Port: num,
   Cookie: {
     Secret: str,
