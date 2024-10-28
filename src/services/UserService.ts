@@ -37,7 +37,6 @@ async function updateOne(user: IUser): Promise<void> {
       USER_NOT_FOUND_ERR,
     );
   }
-  // Return user
   return UserRepo.update(user);
 }
 
@@ -52,7 +51,6 @@ async function _delete(id: number): Promise<void> {
       USER_NOT_FOUND_ERR,
     );
   }
-  // Delete user
   return UserRepo.delete(id);
 }
 
