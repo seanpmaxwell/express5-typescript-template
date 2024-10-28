@@ -16,12 +16,14 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
+    "-": "^0.0.1",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "express": "^5.0.1",
     "helmet": "^8.0.0",
     "inserturlparams": "^2.0.4",
+    "jet-env": "^1.0.2",
     "jet-logger": "^2.0.1",
     "jet-paths": "^1.0.9",
     "jet-schema": "^1.0.6",

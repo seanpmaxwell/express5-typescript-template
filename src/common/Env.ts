@@ -1,26 +1,32 @@
-/* eslint-disable n/no-process-env */
+import jetEnv, { isBool, isNum } from 'jet-env';
 
+import { isEnumVal } from '@src/util/type-checks';
 import { NodeEnvs } from './constants';
 
 
-export default {
-  NodeEnv: (process.env.NODE_ENV ?? '') as NodeEnvs,
-  Port: (process.env.PORT ?? 0),
+
+const isNodeEnv = (arg: unknown): arg is NodeEnvs => {
+  return isEnumVal(NodeEnvs)(arg);
+};
+
+
+export default jetEnv({
+  NodeEnv: ['process.env.NODE_ENV', isNodeEnv],
+  Port: ['PORT', isNum],
   CookieProps: {
     Key: 'ExpressGeneratorTs',
-    Secret: (process.env.COOKIE_SECRET ?? ''),
-    // Casing to match express cookie options
+    Secret: 'COOKIE_SECRET',
     Options: {
       httpOnly: true,
       signed: true,
-      path: (process.env.COOKIE_PATH ?? ''),
-      maxAge: Number(process.env.COOKIE_EXP ?? 0),
-      domain: (process.env.COOKIE_DOMAIN ?? ''),
-      secure: (process.env.SECURE_COOKIE === 'true'),
+      path: 'COOKIE_PATH',
+      maxAge: ['COOKIE_EXP', isNum],
+      domain: 'COOKIE_DOMAIN',
+      secure: ['SECURE_COOKIE', isBool],
     },
   },
   Jwt: {
-    Secret: (process.env.JWT_SECRET ??  ''),
-    Exp: (process.env.COOKIE_EXP ?? ''), // exp at the same time as the cookie
+    Secret: 'JWT_SECRET',
+    Exp: 'COOKIE_EXP',
   },
-} as const;
+});
