@@ -1,25 +1,24 @@
-import jetEnv, { isBool, isNum } from 'jet-env';
+import jetEnv, { bool, num, str } from 'jet-env';
 
 import { isEnumVal } from '@src/util/type-checks';
 import { NodeEnvs } from './constants';
 
 
-const isNodeEnv = (arg: unknown): arg is NodeEnvs => {
-  return isEnumVal(NodeEnvs)(arg);
-};
+
+const checkNodeEnv = isEnumVal(NodeEnvs);
 
 export default jetEnv({
-  NodeEnv: ['process.env.NODE_ENV', isNodeEnv],
-  Port: ['PORT', isNum],
-  CookieProps: {
-    Secret: 'COOKIE_SECRET',
+  NodeEnv: (arg): arg is NodeEnvs => checkNodeEnv(arg),
+  Port: num,
+  Cookie: {
+    Secret: str,
     Options: {
-      httpOnly: 'COOKIE_HTTP_ONLY',
-      signed: 'COOKIE_SIGNED',
-      path: 'COOKIE_PATH',
-      maxAge: ['COOKIE_EXP', isNum],
-      domain: 'COOKIE_DOMAIN',
-      secure: ['SECURE_COOKIE', isBool],
+      httpOnly: bool,
+      signed: bool,
+      path: str,
+      maxAge: num,
+      domain: str,
+      secure: bool,
     },
   },
 });

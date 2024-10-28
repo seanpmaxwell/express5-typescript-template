@@ -32,14 +32,11 @@ function checkType<T>(type: string) {
   };
 }
 
-
-// **** Enums **** //
-
 /**
  * Check is value satisfies enum.
  */
 export function isEnumVal<T>(arg: T): ((arg: unknown) => arg is T) {
-  const vals = getEnumVals(arg);
+  const vals = _getEnumVals(arg);
   return (arg: unknown): arg is T => {
     return vals.some(val => arg === val);
   };
@@ -48,31 +45,24 @@ export function isEnumVal<T>(arg: T): ((arg: unknown) => arg is T) {
 /**
  * Get the values of an enum object.
  */
-export function getEnumVals(arg: unknown) {
+function _getEnumVals(arg: unknown): unknown[] {
   if (isNonArrObj(arg)) {
-    const keys = getEnumKeys(arg);
-    return keys.map(key => arg[key]);
-  }
-  throw Error('"getEnumVals" be an non-array object');
-}
-
-/**
- * Get the keys of an enum object.
- */
-export function getEnumKeys(arg: Record<string, unknown>): string[] {
-  if (isNonArrObj(arg)) {
-    return Object.keys(arg).reduce((arr: string[], key) => {
-      if (!arr.includes(key) && isStr(arg[key])) {
+    // Get keys
+    const resp = Object.keys(arg).reduce((arr: unknown[], key) => {
+      if (!arr.includes(key)) {
         arr.push(arg[key]);
       }
       return arr;
     }, []);
+    // Check if string or number enum
+    if (isNum(arg[resp[0] as string])) {
+      return resp.map(item => arg[item as string]);
+    } else {
+      return resp;
+    }
   }
   throw Error('"getEnumKeys" be an non-array object');
 }
-
-
-// **** Misc **** //
 
 /**
  * Check if non-array object.

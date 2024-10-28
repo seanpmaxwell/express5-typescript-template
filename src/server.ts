@@ -24,7 +24,7 @@ const app = express();
 // Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser(Env.CookieProps.Secret));
+app.use(cookieParser(Env.Cookie.Secret));
 
 // Show routes called in console during development
 if (Env.NodeEnv === NodeEnvs.Dev) {
