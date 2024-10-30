@@ -10,12 +10,17 @@ export interface IUser {
   address?: { street: string };
 }
 
-export default schema<IUser>({
+const User = schema<IUser>({
   id: isNum,
   name: isStr,
   created: Date,
   email: isStr,
   address: schema({
     street: isStr,
-  }, true),
+  }, { optional: true }),
 });
+
+
+// **** Export default **** //
+
+export default User;
