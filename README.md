@@ -36,7 +36,7 @@
 
 ## ⚠️ Important
 
-In `src/server.ts` you gonna wanna remove this on line 37:
+In `src/server.ts` you're gonna wanna remove this on line 37:
 ```typescript
 {
     contentSecurityPolicy: false,
