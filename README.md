@@ -1,8 +1,7 @@
 # 🚀 Express5 Typescript Template
 - Demo the latest version of ExpressJS (v5) with Typescript and the new "flat" configuration for ESlint.
-- Note the there are git two branches of this:
-  - `master`: uses nodemon, dotenv, swc, and ts-node
-  - `setup_using_tsx`: replace all the above with tsx
+- Note that there is an additional git-branch that uses **tsx**:
+  - `setup_using_tsx`: replace `nodemon, dotenv, swc, and ts-node` with tsx
 
 
 ## 📁 Background
