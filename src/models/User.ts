@@ -1,5 +1,5 @@
 import schema from '@src/util/schema';
-import { isNum, isStr } from '@src/util/type-checks';
+import { isNum, isStr } from '@src/util/validators';
 
 
 export interface IUser {
@@ -15,7 +15,7 @@ const User = schema<IUser>({
   name: isStr,
   created: Date,
   email: isStr,
-  address: schema({
+  address: schema<IUser['address']>({
     street: isStr,
   }, { optional: true }),
 });
