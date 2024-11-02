@@ -3,6 +3,7 @@ import tseslint from 'typescript-eslint';
 import stylisticTs from '@stylistic/eslint-plugin-ts';
 import nodePlugin from 'eslint-plugin-n';
 
+
 export default tseslint.config(
   eslint.configs.recommended,
   nodePlugin.configs['flat/recommended-script'],
@@ -28,7 +29,9 @@ export default tseslint.config(
       '@stylistic/ts': stylisticTs,
     },
   },
-  { files: ['**/*.ts'] },
+  {
+    files: ['**/*.ts'],
+  },
   {
     rules: {
       '@typescript-eslint/explicit-member-accessibility': 'warn',
@@ -39,13 +42,43 @@ export default tseslint.config(
       '@typescript-eslint/restrict-template-expressions': [
         'error', { allowNumber: true },
       ],
+      '@typescript-eslint/restrict-plus-operands': [
+        'warn', { allowNumberAndString: true },
+      ],
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unsafe-enum-comparison': 0,
+      '@typescript-eslint/no-unnecessary-type-parameters': 0,
       'max-len': [
         'warn',
         {
           'code': 80,
         },
       ],
-      '@stylistic/ts/semi': ['warn'],
+      '@stylistic/ts/semi': ['warn', 'always'],
+      '@stylistic/ts/member-delimiter-style': ['warn', {
+        'multiline': {
+          'delimiter': 'comma',
+          'requireLast': true,
+        },
+        'singleline': {
+          'delimiter': 'comma',
+          'requireLast': false,
+        },
+        'overrides': {
+          'interface': {
+            'singleline': {
+              'delimiter': 'semi',
+              'requireLast': false,
+            },
+            'multiline': {
+              'delimiter': 'semi',
+              'requireLast': true,
+            },
+          },
+        },
+      }],
+      '@typescript-eslint/no-non-null-assertion': 0,
+      '@typescript-eslint/no-unused-expressions': 'warn',
       'comma-dangle': ['warn', 'always-multiline'],
       'no-console': 1,
       'no-extra-boolean-cast': 0,
@@ -54,6 +87,7 @@ export default tseslint.config(
       'n/no-process-env': 1,
       'n/no-missing-import': 0,
       'n/no-unpublished-import': 0,
+      'prefer-const': 'warn',
     },
   },
 );

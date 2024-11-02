@@ -1,9 +1,7 @@
-import { transform } from 'jet-schema';
-
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import UserService from '@src/services/UserService';
 import User from '@src/models/User';
-import { isNum } from '@src/util/type-checks';
+import { isNum, transform } from '@src/util/validators';
 
 import { IReq, IRes } from './common/types';
 import check from './common/check';

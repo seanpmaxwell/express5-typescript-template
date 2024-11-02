@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
-
 /**
  * NOTE: These functions were copied from here:
  * https://github.com/seanpmaxwell/ts-validators/blob/master/src/validators.ts
@@ -7,11 +5,14 @@
  * There are plenty of more validators to copy there ;)
  */
 
+/* eslint-disable max-len */
+
 
 // **** Types **** //
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TFunc = (...args: any[]) => any;
+export type TValidateWithTransform<T> = (arg: unknown, cb?: (arg: T) => void) => arg is T;
 
 
 // **** Variables **** //
@@ -71,4 +72,20 @@ function isNonArrObj(
   arg: unknown,
 ): arg is Record<string, unknown> {
   return typeof arg === 'object' && !Array.isArray(arg);
+}
+
+/**
+ * Transform a value before checking it.
+ */
+export function transform<T>(
+  transFn: TFunc,
+  vldt: ((arg: unknown) => arg is T),
+): TValidateWithTransform<T> {
+  return (arg: unknown, cb?: (arg: T) => void): arg is T => {
+    if (arg !== undefined) {
+      arg = transFn(arg);
+    }
+    cb?.(arg as T);
+    return vldt(arg);
+  };
 }

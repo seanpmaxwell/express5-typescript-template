@@ -1,6 +1,6 @@
 import jetEnv, { bool, num, str } from 'jet-env';
 
-import { isEnumVal } from '@src/util/type-checks';
+import { isEnumVal } from '@src/util/validators';
 import { NodeEnvs } from './constants';
 
 

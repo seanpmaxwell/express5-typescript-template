@@ -1,11 +1,11 @@
 import jetSchema from 'jet-schema';
-import { isBool, isNum, isStr } from './type-checks';
+import { isBool, isNum, isStr } from './validators';
 
 
 export default jetSchema({
-  defaultValuesMap: [
-    [isNum, 0],
-    [isStr, ''],
-    [isBool, false],
+  globals: [
+    { fn: isNum, default: 0 },
+    { fn: isStr, default: '' },
+    { fn: isBool, default: false },
   ],
 });
