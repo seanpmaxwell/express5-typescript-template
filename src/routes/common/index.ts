@@ -14,9 +14,10 @@ export type IRes = Response<unknown, TObj>;
 // **** Functions **** //
 
 /**
- * Parse a Request object property and throw a validation error if it fails.
+ * Parse a Request object property and throw a Validation error if it fails.
  */
 export function reqParse<U extends TSchema>(schema: U) {
+  // Initialize parse function
   const parseFn = parse<U>(
     schema, false, false, false,
     (prop?: string, value?: unknown) => {
