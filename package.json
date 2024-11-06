@@ -4,7 +4,7 @@
   "scripts": {
     "build": "ts-node ./scripts/build.ts",
     "clean:install": "rm -rf ./node_modules && rm -r package-lock.json && npm i",
-    "clean:junk": "knip --fix",
+    "clean:find-unused": "knip",
     "dev": "NODE_ENV=development ts-node ./src",
     "dev:hot": "nodemon --exec \"npm run dev\" --watch ./src --ext .ts",
     "lint": "eslint --flag unstable_ts_config",
@@ -20,9 +20,8 @@
     "entry": [
       "src/index.ts"
     ],
-    "exclude": ["dependencies"],
     "project": [
-      "src/**/*.ts"
+      "**/*.ts"
     ]
   },
   "dependencies": {

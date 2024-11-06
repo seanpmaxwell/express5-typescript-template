@@ -20,6 +20,8 @@
 - Schema validation: Jet-Schema
 - Dates: DayJs
 - Some front-end stuff: handlebars and bootstrap
+- Scan for unused exports: Knip
+  - NOTE: `knip` tends to report a lot of false positives so use the output from `npm run clean:report-unused` as a guideline. 
 
 
 ## ✅ Available Commands
