@@ -4,7 +4,7 @@ import User from '@src/models/User';
 import { isNum, transform } from '@src/util/validators';
 
 import { IReq, IRes } from './common/types';
-import check from './common/check';
+import { reqParse } from './common';
 
 
 // **** Functions **** //
@@ -21,7 +21,7 @@ async function getAll(_: IReq, res: IRes) {
  * Add one user.
  */
 async function add(req: IReq, res: IRes) {
-  const user = check(req.body, 'user', User.test);
+  const { user } = reqParse({ user: User.test }, req.body);
   await UserService.addOne(user);
   res.status(HttpStatusCodes.CREATED).end();
 }
@@ -30,7 +30,7 @@ async function add(req: IReq, res: IRes) {
  * Update one user.
  */
 async function update(req: IReq, res: IRes) {
-  const user = check(req.body, 'user', User.test);
+  const { user } = reqParse({ user: User.test }, req.body);
   await UserService.updateOne(user);
   res.status(HttpStatusCodes.OK).end();
 }
@@ -39,7 +39,7 @@ async function update(req: IReq, res: IRes) {
  * Delete one user.
  */
 async function delete_(req: IReq, res: IRes) {
-  const id = check(req.params, 'id', transform(Number, isNum));
+  const { id } = reqParse({ id: transform(Number, isNum) }, req.params);
   await UserService.delete(id);
   res.status(HttpStatusCodes.OK).end();
 }
