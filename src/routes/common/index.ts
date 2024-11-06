@@ -16,12 +16,14 @@ export type IRes = Response<unknown, TObj>;
 /**
  * Parse a Request object property and throw a validation error if it fails.
  */
-export function reqParse<U extends TSchema>(schema: U, arg: unknown) {
+export function reqParse<U extends TSchema>(schema: U) {
   try {
-    return parse<U>(schema, arg, (prop?: string, value?: unknown) => {
-      throw new Error(`Property "${prop}" was missing or invalid, ` + 
-        `value: ${String(value)}`);
-    });
+    return parse<U>(
+      schema, false, false, false,
+      (prop?: string, value?: unknown) => {
+        throw new Error(`Property "${prop}" was missing or invalid, ` + 
+          `value: ${String(value)}`);
+      });
   } catch (err) {
     let errStr;
     if (err instanceof Error) {
