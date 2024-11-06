@@ -33,4 +33,4 @@ export function reqParse<U extends TSchema>(schema: U, arg: unknown) {
     }
     throw new ValidationErr(errStr);
   }
-};
+}

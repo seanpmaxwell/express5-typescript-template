@@ -1,5 +1,6 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import stylisticJs from '@stylistic/eslint-plugin-js';
 import stylisticTs from '@stylistic/eslint-plugin-ts';
 import nodePlugin from 'eslint-plugin-n';
 
@@ -26,6 +27,7 @@ export default tseslint.config(
   },
   {
     plugins: {
+      '@stylistic/js': stylisticJs,
       '@stylistic/ts': stylisticTs,
     },
   },
@@ -48,6 +50,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-unsafe-enum-comparison': 0,
       '@typescript-eslint/no-unnecessary-type-parameters': 0,
+      '@stylistic/js/no-extra-semi': 'warn',
       'max-len': [
         'warn',
         {

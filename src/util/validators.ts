@@ -225,7 +225,7 @@ function _parseCore(
     } else if (typeof schemaProp === 'function') {
       if (!schemaProp(val, (tval: unknown) => val = tval)) {
         return onError?.(key, val);
-      };
+      }
     }
     retVal[key] = val;
   }
