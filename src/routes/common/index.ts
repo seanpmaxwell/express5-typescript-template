@@ -1,7 +1,21 @@
+import { Response, Request } from 'express';
+
 import { isStr, parse, TSchema } from '@src/util/validators';
 import { ValidationErr } from '@src/common/classes';
 
 
+// **** Types **** //
+
+type TObj = Record<string, unknown>;
+export type IReq = Request<TObj, void, TObj, TObj>;
+export type IRes = Response<unknown, TObj>;
+
+
+// **** Functions **** //
+
+/**
+ * Parse a Request object property and throw a validation error if it fails.
+ */
 export function reqParse<U extends TSchema>(schema: U, arg: unknown) {
   try {
     return parse<U>(schema, arg, (prop?: string, value?: unknown) => {

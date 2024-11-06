@@ -3,8 +3,7 @@ import UserService from '@src/services/UserService';
 import User from '@src/models/User';
 import { isNum, transform } from '@src/util/validators';
 
-import { IReq, IRes } from './common/types';
-import { reqParse } from './common';
+import { reqParse, IReq, IRes } from './common';
 
 
 // **** Functions **** //
