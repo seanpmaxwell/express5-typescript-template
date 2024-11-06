@@ -12,12 +12,12 @@
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TFunc = (...args: any[]) => any;
-export type TBasicObj = Record<string, unknown>;
+type TBasicObj = Record<string, unknown>;
 
 // Add modifiers
 type AddNull<T, N> = (N extends true ? T | null : T);
 type AddNullables<T, O, N> = (O extends true ? AddNull<T, N> | undefined  : AddNull<T, N>);
-export type AddMods<T, O, N, A> = A extends true ? AddNullables<T[], O, N> : AddNullables<T, O, N>;
+type AddMods<T, O, N, A> = A extends true ? AddNullables<T[], O, N> : AddNullables<T, O, N>;
 
 
 // **** Main **** //
@@ -25,8 +25,7 @@ export type AddMods<T, O, N, A> = A extends true ? AddNullables<T[], O, N> : Add
 export const isStr = _checkType<string>('string');
 export const isNum = _checkType<number>('number');
 export const isBool = _checkType<boolean>('boolean');
-export const isFn = _checkType<TFunc>('function');
-export const isObj = _checkType<object>('object');
+const isObj = _checkType<object>('object');
 export const parse = _parseBase<false, false, false>(false, false, false);
 
 

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "build": "ts-node ./scripts/build.ts",
-    "clean-install": "rm -rf ./node_modules && rm -r package-lock.json && npm i",
+    "clean:install": "rm -rf ./node_modules && rm -r package-lock.json && npm i",
+    "clean:junk": "knip --fix",
     "dev": "NODE_ENV=development ts-node ./src",
     "dev:hot": "nodemon --exec \"npm run dev\" --watch ./src --ext .ts",
     "lint": "eslint --flag unstable_ts_config",
@@ -14,6 +15,15 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "knip": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "exclude": ["dependencies"],
+    "project": [
+      "src/**/*.ts"
+    ]
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
@@ -50,6 +60,7 @@
     "fs-extra": "^11.2.0",
     "jasmine": "^5.3.1",
     "jiti": "^2.3.3",
+    "knip": "^5.36.3",
     "nodemon": "^3.1.7",
     "supertest": "^7.0.0",
     "ts-node": "^10.9.2",
