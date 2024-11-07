@@ -21,7 +21,7 @@
 - Dates: DayJs
 - Some front-end stuff: handlebars and bootstrap
 - Scan for unused exports: Knip
-  - NOTE: `knip` tends to report a lot of false positives so use the output from `npm run clean:report-unused` as a guideline. 
+  - NOTE: `knip` tends to report a lot of false positives so use the output from `npm run clean:find-unused` as a guideline. 
 
 
 ## ✅ Available Commands
