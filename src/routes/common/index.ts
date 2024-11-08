@@ -19,7 +19,7 @@ export type IRes = Response<unknown, TObj>;
 export function reqParse<U extends TSchema>(schema: U) {
   // Initialize parse function
   const parseFn = parse<U>(
-    schema, false, false, false,
+    schema,
     (prop?: string, value?: unknown) => {
       throw new Error(`Property "${prop}" was missing or invalid, ` + 
         `value: ${String(value)}`);
