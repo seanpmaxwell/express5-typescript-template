@@ -20,7 +20,7 @@ export const isStr = _checkType<string>('string');
 export const isNum = _checkType<number>('number');
 export const isBool = _checkType<boolean>('boolean');
 export const isObj = _checkType<object>('object');
-export const parse = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => _parseBase<U>(arg, false, false, false, onError);
+export const parse = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => _parseBase<U, false, false, false>(arg, false, false, false, onError);
 
 
 // **** Misc **** //
@@ -124,19 +124,19 @@ type TParseOnError<A> = (
 );
 
 /**
- * validates an object schema, calls an error function is supplied one, returns 
+ * Validates an object schema, calls an error function is supplied one, returns 
  * "undefined" if the parse fails, and works recursively too.
  */
 function _parseBase<
   U extends TSchema,
-  O extends boolean = false,
-  N extends boolean = false,
-  A extends boolean = false,
+  O extends boolean,
+  N extends boolean,
+  A extends boolean,
 >(
   schema: U,
-  optional?: O,
-  nullable?: N,
-  isArr?: A,
+  optional: O,
+  nullable: N,
+  isArr: A,
   onError?: TParseOnError<A>,
 ) {
   return (arg: unknown) => _parseCore(
