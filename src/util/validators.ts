@@ -23,7 +23,7 @@ export const isObj = _checkType<object>('object');
 export const parse = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => _parseBase<U>(arg, false, false, false, onError);
 
 
-// **** Enum **** //
+// **** Misc **** //
 
 /**
  * Check is value satisfies enum.
@@ -65,9 +65,6 @@ function isNonArrObj(
 ): arg is Record<string, unknown> {
   return typeof arg === 'object' && !Array.isArray(arg);
 }
-
-
-// **** Misc Util **** //
 
 /**
  * Wrapper to check basic type.
