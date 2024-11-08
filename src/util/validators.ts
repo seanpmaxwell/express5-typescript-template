@@ -1,10 +1,3 @@
-/**
- * NOTE: These functions were copied from here:
- * https://github.com/seanpmaxwell/ts-validators/blob/master/src/validators.ts
- * 
- * There are plenty of more validators to copy there ;)
- */
-
 /* eslint-disable max-len */
 
 
@@ -22,10 +15,12 @@ type AddMods<T, O, N, A> = A extends true ? AddNullables<T[], O, N> : AddNullabl
 
 // **** Main **** //
 
+// NOTE: These functions were copied from here: https://github.com/seanpmaxwell/ts-validators/blob/master/src/validators.ts
 export const isStr = _checkType<string>('string');
 export const isNum = _checkType<number>('number');
 export const isBool = _checkType<boolean>('boolean');
-const isObj = _checkType<object>('object');
+export const isObj = _checkType<object>('object');
+export const parse = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => _parseBase<U>(arg, false, false, false, onError);
 
 
 // **** Enum **** //
@@ -125,11 +120,17 @@ type TInferParseResHelper<U> = {
   );
 };
 
+type TParseOnError<A> = (
+  A extends true 
+  ? ((property?: string, value?: unknown, index?: number) => void) 
+  : ((property?: string, value?: unknown) => void)
+);
+
 /**
  * validates an object schema, calls an error function is supplied one, returns 
  * "undefined" if the parse fails, and works recursively too.
  */
-export function parse<
+function _parseBase<
   U extends TSchema,
   O extends boolean = false,
   N extends boolean = false,
@@ -139,11 +140,7 @@ export function parse<
   optional?: O,
   nullable?: N,
   isArr?: A,
-  onError?: (
-    A extends true 
-    ? ((property?: string, value?: unknown, index?: number) => void) 
-    : ((property?: string, value?: unknown) => void)
-  ),
+  onError?: TParseOnError<A>,
 ) {
   return (arg: unknown) => _parseCore(
     !!optional,
