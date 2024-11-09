@@ -11,24 +11,30 @@ type TBasicObj = Record<string, unknown>;
 type AddNull<T, N> = (N extends true ? T | null : T);
 type AddNullables<T, O, N> = (O extends true ? AddNull<T, N> | undefined  : AddNull<T, N>);
 type AddMods<T, O, N, A> = A extends true ? AddNullables<T[], O, N> : AddNullables<T, O, N>;
+export type TValidateWithTransform<T> = (arg: unknown, cb?: (arg: T) => void) => arg is T;
 
 
-// **** Main **** //
-
+// **** Functions **** //
 // NOTE: These functions were copied from here: https://github.com/seanpmaxwell/ts-validators/blob/master/src/validators.ts
+
+// Misc
 export const isStr = _checkType<string>('string');
 export const isNum = _checkType<number>('number');
 export const isBool = _checkType<boolean>('boolean');
 export const isObj = _checkType<object>('object');
 export const parse = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => _parseBase<U, false, false, false>(arg, false, false, false, onError);
+export const isEnumVal = _isEnumVal;
+
+// Util
+export const transform = _transform;
 
 
-// **** Misc **** //
+// **** Helpers **** //
 
 /**
  * Check is value satisfies enum.
  */
-export function isEnumVal<T>(arg: T): ((arg: unknown) => arg is T[keyof T]) {
+function _isEnumVal<T>(arg: T): ((arg: unknown) => arg is T[keyof T]) {
   const vals = _getEnumVals(arg);
   return (arg: unknown): arg is T[keyof T] => {
     return vals.some(val => arg === val);
@@ -39,7 +45,7 @@ export function isEnumVal<T>(arg: T): ((arg: unknown) => arg is T[keyof T]) {
  * Get the values of an enum object.
  */
 function _getEnumVals(arg: unknown): unknown[] {
-  if (isNonArrObj(arg)) {
+  if (_isNonArrObj(arg)) {
     // Get keys
     const resp = Object.keys(arg).reduce((arr: unknown[], key) => {
       if (!arr.includes(key)) {
@@ -60,7 +66,7 @@ function _getEnumVals(arg: unknown): unknown[] {
 /**
  * Check if non-array object.
  */
-function isNonArrObj(
+function _isNonArrObj(
   arg: unknown,
 ): arg is Record<string, unknown> {
   return typeof arg === 'object' && !Array.isArray(arg);
@@ -75,15 +81,10 @@ function _checkType<T>(type: string) {
   };
 }
 
-
-// **** Transform **** //
-
-export type TValidateWithTransform<T> = (arg: unknown, cb?: (arg: T) => void) => arg is T;
-
 /**
  * Transform a value before checking it.
  */
-export function transform<T>(
+function _transform<T>(
   transFn: TFunc,
   vldt: ((arg: unknown) => arg is T),
 ): TValidateWithTransform<T> {
