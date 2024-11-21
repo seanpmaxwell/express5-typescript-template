@@ -1,3 +1,8 @@
+/**
+ * NOTE: These functions were copied from here: 
+ * https://github.com/seanpmaxwell/ts-validators/blob/master/src/validators.ts
+ */
+
 /* eslint-disable max-len */
 
 
@@ -6,6 +11,7 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TFunc = (...args: any[]) => any;
 type TBasicObj = Record<string, unknown>;
+type TEnum = Record<string, string | number>;
 
 // Add modifiers
 type AddNull<T, N> = (N extends true ? T | null : T);
@@ -15,15 +21,21 @@ export type TValidateWithTransform<T> = (arg: unknown, cb?: (arg: T) => void) =>
 
 
 // **** Functions **** //
-// NOTE: These functions were copied from here: https://github.com/seanpmaxwell/ts-validators/blob/master/src/validators.ts
 
-// Misc
+// Nullables
+export const isUndef = ((arg: unknown): arg is undefined => arg === undefined);
+export const isNull = ((arg: unknown): arg is null => arg === null);
+
+// Base types
 export const isStr = _checkType<string>('string');
 export const isNum = _checkType<number>('number');
 export const isBool = _checkType<boolean>('boolean');
 export const isObj = _checkType<object>('object');
-export const parse = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => _parseBase<U, false, false, false>(arg, false, false, false, onError);
-export const isEnumVal = _isEnumVal;
+
+// Misc
+export const parse = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => 
+  _parseBase<U, false, false, false>(arg, false, false, false, onError);
+export const isEnumVal = _isEnumValBase;
 
 // Util
 export const transform = _transform;
@@ -32,44 +44,96 @@ export const transform = _transform;
 // **** Helpers **** //
 
 /**
+ * Check if unknown is a valid enum object.
+ * NOTE: this does not work for mixed enums see: "eslint@typescript-eslint/no-mixed-enums"
+ */
+function _isEnum(arg: unknown): arg is TEnum {
+  // Check is non-array object
+  if (!(isObj(arg) && !Array.isArray(arg))) {
+    return false;
+  }
+  // Check if string or number enum
+  const param = (arg as TBasicObj),
+    keys = Object.keys(param),
+    middle = Math.floor(keys.length / 2);
+  // ** String Enum ** //
+  if (!isNum(param[keys[middle]])) {
+    return _checkObjEntries(arg, (key, val) => {
+      return isStr(key) && isStr(val);
+    });
+  }
+  // ** Number Enum ** //
+  // Enum key length will always be even
+  if (keys.length % 2 !== 0) {
+    return false;
+  }
+  // Check key/values
+  for (let i = 0; i < middle; i++) {
+    const thisKey = keys[i],
+      thisVal = param[thisKey],
+      thatKey = keys[i + middle],
+      thatVal = param[thatKey];
+    if (!(thisVal === thatKey && thisKey === String(thatVal))) {
+      return false;
+    }
+  }
+  // Return
+  return true;
+}
+
+/**
  * Check is value satisfies enum.
  */
-function _isEnumVal<T>(arg: T): ((arg: unknown) => arg is T[keyof T]) {
-  const vals = _getEnumVals(arg);
-  return (arg: unknown): arg is T[keyof T] => {
-    return vals.some(val => arg === val);
+function _isEnumValBase<T, 
+  O extends boolean,
+  N extends boolean
+>(
+  enumArg: T,
+  optional: O,
+  nullable: N,
+): ((arg: unknown) => arg is AddNullables<T[keyof T], O, N>) {
+  // Check is enum
+  if (!_isEnum(enumArg)) {
+    throw Error('Item to check from must be an enum.');
+  }
+  // Get keys
+  let resp = Object.keys(enumArg).reduce((arr: unknown[], key) => {
+    if (!arr.includes(key)) {
+      arr.push(enumArg[key]);
+    }
+    return arr;
+  }, []);
+  // Check if string or number enum
+  if (isNum(enumArg[resp[0] as string])) {
+    resp = resp.map(item => enumArg[item as string]);
+  }
+  // Return validator function
+  return (arg: unknown): arg is AddNullables<T[keyof T], O, N> => {
+    if (isUndef(arg)) {
+      return !!optional;
+    }
+    if (isNull(arg)) {
+      return !!nullable;
+    }
+    return resp.some(val => arg === val);
   };
 }
 
 /**
- * Get the values of an enum object.
+ * Do a validator callback function for each object key/value pair.
  */
-function _getEnumVals(arg: unknown): unknown[] {
-  if (_isNonArrObj(arg)) {
-    // Get keys
-    const resp = Object.keys(arg).reduce((arr: unknown[], key) => {
-      if (!arr.includes(key)) {
-        arr.push(arg[key]);
+function _checkObjEntries(
+  val: unknown,
+  cb: (key: string, val: unknown) => boolean,
+): val is NonNullable<object> {
+  if (isObj(val)) {
+    for (const entry of Object.entries(val)) {
+      if (!cb(entry[0], entry[1])) {
+        return false;
       }
-      return arr;
-    }, []);
-    // Check if string or number enum
-    if (isNum(arg[resp[0] as string])) {
-      return resp.map(item => arg[item as string]);
-    } else {
-      return resp;
     }
   }
-  throw Error('"getEnumKeys" be an non-array object');
-}
-
-/**
- * Check if non-array object.
- */
-function _isNonArrObj(
-  arg: unknown,
-): arg is Record<string, unknown> {
-  return typeof arg === 'object' && !Array.isArray(arg);
+  return true;
 }
 
 /**
