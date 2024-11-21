@@ -35,7 +35,7 @@ export const isObj = _checkType<object>('object');
 // Misc
 export const parse = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => 
   _parseBase<U, false, false, false>(arg, false, false, false, onError);
-export const isEnumVal = _isEnumValBase;
+export const isEnumVal = <T>(arg: T) => _isEnumValBase<T, false, false>(arg, false, false);
 
 // Util
 export const transform = _transform;
