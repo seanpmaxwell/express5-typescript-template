@@ -33,8 +33,8 @@ export const isBool = _checkType<boolean>('boolean');
 export const isObj = _checkType<object>('object');
 
 // Misc
-export const parse = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => 
-  _parseBase<U, false, false, false>(arg, false, false, false, onError);
+export const parseObj = <U extends TSchema>(arg: U, onError?: TParseOnError<false>) => 
+  _parseObj<U, false, false, false>(arg, false, false, false, onError);
 export const isEnumVal = <T>(arg: T) => _isEnumValBase<T, false, false>(arg, false, false);
 
 // Util
@@ -192,7 +192,7 @@ type TParseOnError<A> = (
  * Validates an object schema, calls an error function is supplied one, returns 
  * "undefined" if the parse fails, and works recursively too.
  */
-function _parseBase<
+function _parseObj<
   U extends TSchema,
   O extends boolean,
   N extends boolean,

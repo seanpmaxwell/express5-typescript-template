@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 
-import { isStr, parse, TSchema } from '@src/util/validators';
+import { isStr, parseObj, TSchema } from '@src/util/validators';
 import { ValidationErr } from '@src/common/classes';
 
 
@@ -18,7 +18,7 @@ export type IRes = Response<unknown, TObj>;
  */
 export function reqParse<U extends TSchema>(schema: U) {
   // Initialize parse function
-  const parseFn = parse<U>(
+  const parseFn = parseObj<U>(
     schema,
     (prop?: string, value?: unknown) => {
       throw new Error(`Property "${prop}" was missing or invalid, ` + 
