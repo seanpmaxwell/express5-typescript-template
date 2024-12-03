@@ -39,6 +39,7 @@ export const isEnumVal = <T>(arg: T) => _isEnumValBase<T, false, false>(arg, fal
 
 // Util
 export const transform = _transform;
+export const safeJsonParse = _safeJsonParse;
 
 
 // **** Helpers **** //
@@ -161,8 +162,19 @@ function _transform<T>(
   };
 }
 
+/**
+ * Safe JSON parse
+ */
+function _safeJsonParse<T>(arg: unknown): T {
+  if (isStr(arg)) {
+    return JSON.parse(arg) as T;
+  } else {
+    throw Error('JSON parse argument must be a string');
+  }
+}
 
-// **** Parse **** //
+
+// **** Parse Object **** //
 
 export interface TSchema {
   [key: string]: TValidateWithTransform<unknown> | TSchema;
@@ -184,12 +196,12 @@ type TInferParseResHelper<U> = {
 
 type TParseOnError<A> = (
   A extends true 
-  ? ((property?: string, value?: unknown, index?: number) => void) 
-  : ((property?: string, value?: unknown) => void)
+  ? ((property?: string, value?: unknown, index?: number, caughtErr?: unknown) => void) 
+  : ((property?: string, value?: unknown, caughtErr?: unknown) => void)
 );
 
 /**
- * Validates an object schema, calls an error function is supplied one, returns 
+ * validates an object schema, calls an error function is supplied one, returns 
  * "undefined" if the parse fails, and works recursively too.
  */
 function _parseObj<
@@ -204,7 +216,7 @@ function _parseObj<
   isArr: A,
   onError?: TParseOnError<A>,
 ) {
-  return (arg: unknown) => _parseCore(
+  return (arg: unknown) => _parseObjCore(
     !!optional,
     !!nullable,
     !!isArr,
@@ -217,7 +229,7 @@ function _parseObj<
 /**
  * Validate the schema. 
  */
-function _parseCore(
+function _parseObjCore(
   optional: boolean,
   nullable: boolean,
   isArr: boolean,
@@ -225,14 +237,14 @@ function _parseCore(
   arg: unknown,
   onError?: TFunc,
 ) {
-  // check 'undefined'
+  // Check "undefined"
   if (arg === undefined) {
     if (!optional) {
       onError?.('object value was undefined but not optional', arg);
       return undefined;
     }
   }
-  // check null
+  // Check "null"
   if (arg === null) {
     if (!nullable) {
       onError?.('object value was null but not nullable', arg);
@@ -240,7 +252,7 @@ function _parseCore(
     }
     return null;
   }
-  // check array
+  // Check "array"
   if (isArr) {
     if (!Array.isArray(arg)) {
       onError?.('object not an array', arg);
@@ -250,8 +262,9 @@ function _parseCore(
     const resp = [];
     for (let i = 0; i < arg.length; i++) {
       const item: unknown = arg[i];
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      const parsedItem = _parseCoreHelper(schema, item, (prop, val) => onError?.(prop, val, i));
+      const parsedItem = _parseObjCoreHelper(schema, item, (prop, val, caughtErr) => {
+        onError?.(prop, val, i, caughtErr);
+      });
       if (parsedItem === undefined) {
         return undefined;
       } else {
@@ -260,18 +273,18 @@ function _parseCore(
     }
     return resp;
   }
-  // Return
-  return _parseCoreHelper(schema, arg, onError);
+  // Default
+  return _parseObjCoreHelper(schema, arg, onError);
 }
 
 /**
  * Iterate an object, apply a validator function to to each property in an 
  * object using the schema.
  */
-function _parseCoreHelper(
+function _parseObjCoreHelper(
   schema: TSchema,
   arg: unknown,
-  onError?: (property?: string, value?: unknown) => void,
+  onError?: TParseOnError<false>,
 ) {
   if (!isObj(arg)) {
     return;
@@ -280,19 +293,30 @@ function _parseCoreHelper(
   for (const key in schema) {
     const schemaProp = schema[key];
     let val = (arg as TBasicObj)[key];
+    // Nested object
     if (typeof schemaProp === 'object') {
-      const childVal = _parseCoreHelper(schemaProp, val, onError);
+      const childVal = _parseObjCoreHelper(schemaProp, val, onError);
       if (childVal !== undefined) {
         val = childVal;
       } else {
         return undefined;
       }
+    // Run validator
     } else if (typeof schemaProp === 'function') {
-      if (!schemaProp(val, (tval: unknown) => val = tval)) {
-        return onError?.(key, val);
+      try {
+        if (!schemaProp(val, (tval: unknown) => val = tval)) {
+          return onError?.(key, val);
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          return onError?.(key, val, err.message);
+        } else {
+          return onError?.(key, val, err);
+        }
       }
     }
     retVal[key] = val;
   }
+  // Return
   return retVal;
 }

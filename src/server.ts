@@ -10,7 +10,7 @@ import BaseRouter from '@src/routes';
 import Paths from '@src/routes/common/Paths';
 import Env from '@src/common/Env';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
-import { RouteError } from '@src/common/classes';
+import { RouteError } from '@src/common/route-errors';
 import { NodeEnvs } from '@src/common/constants';
 
 

@@ -6,8 +6,11 @@ import app from '@src/server';
 
 import UserRepo from '@src/repos/UserRepo';
 import User, { IUser } from '@src/models/User';
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import { USER_NOT_FOUND_ERR } from '@src/services/UserService';
+import { safeJsonParse } from '@src/util/validators';
+
+import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import { IValidationErrFormat, ValidationErr } from '@src/common/route-errors';
 
 import Paths from 'spec/support/Paths';
 import apiCb from 'spec/support/apiCb';
@@ -88,7 +91,9 @@ describe('UserRouter', () => {
       // Call api
       callApi(null, res => {
         expect(res.status).toBe(HttpStatusCodes.BAD_REQUEST);
-        expect(res.body.error).toBeTruthy();
+        const errorObj = safeJsonParse<IValidationErrFormat>(res.body.error);
+        expect(errorObj.error).toBe(ValidationErr.MSG);
+        expect(errorObj.parameter).toBe('user');
         done();
       });
     });
@@ -109,10 +114,8 @@ describe('UserRouter', () => {
     // Success
     it(`should return a status code of "${HttpStatusCodes.OK}" if the ` + 
     'request was successful.', done => {
-      // Setup spies
       spyOn(UserRepo, 'update').and.resolveTo();
       spyOn(UserRepo, 'persists').and.resolveTo(true);
-      // Call api
       callApi(DUMMY_USER, res => {
         expect(res.status).toBe(HttpStatusCodes.OK);
         done();
@@ -123,10 +126,11 @@ describe('UserRouter', () => {
     it('should return a JSON object with an error message and a status code ' +
     `of "${HttpStatusCodes.BAD_REQUEST}" if the user param was missing`,
     done => {
-      // Call api
       callApi(null, res => {
         expect(res.status).toBe(HttpStatusCodes.BAD_REQUEST);
-        expect(res.body.error).toBeTruthy();
+        const errorObj = safeJsonParse<IValidationErrFormat>(res.body.error);
+        expect(errorObj.error).toBe(ValidationErr.MSG);
+        expect(errorObj.parameter).toBe('user');
         done();
       });
     });
@@ -135,7 +139,6 @@ describe('UserRouter', () => {
     it('should return a JSON object with the error message of ' + 
     `"${USER_NOT_FOUND_ERR}" and a status code of ` + 
     `"${HttpStatusCodes.NOT_FOUND}" if the id was not found.`, done => {
-      // Call api
       callApi(DUMMY_USER, res => {
         expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
         expect(res.body.error).toBe(USER_NOT_FOUND_ERR);
@@ -156,10 +159,8 @@ describe('UserRouter', () => {
     // Success
     it(`should return a status code of "${HttpStatusCodes.OK}" if the ` + 
     'request was successful.', done => {
-      // Setup spies
       spyOn(UserRepo, 'delete').and.resolveTo();
       spyOn(UserRepo, 'persists').and.resolveTo(true);
-      // Call api
       callApi(5, res => {
         expect(res.status).toBe(HttpStatusCodes.OK);
         done();
@@ -170,7 +171,6 @@ describe('UserRouter', () => {
     it('should return a JSON object with the error message of ' + 
     `"${USER_NOT_FOUND_ERR}" and a status code of ` + 
     `"${HttpStatusCodes.NOT_FOUND}" if the id was not found.`, done => {
-      // Setup spies
       callApi(-1, res => {
         expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
         expect(res.body.error).toBe(USER_NOT_FOUND_ERR);
