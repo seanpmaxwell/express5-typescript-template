@@ -2,7 +2,7 @@ import { Response } from 'supertest';
 import { IUser } from '@src/models/User';
 
 
-// Misc
+// API Response
 export type TRes = Omit<Response, 'body'> & {
   body: {
     error?: string,
@@ -10,4 +10,8 @@ export type TRes = Omit<Response, 'body'> & {
     users?: IUser[],
   },
 };
+
+// API Callback
 export type TApiCb = (res: TRes) => void;
+
+
