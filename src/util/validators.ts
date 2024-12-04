@@ -8,8 +8,6 @@
 
 // **** Types **** //
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type TFunc = (...args: any[]) => any;
 type TBasicObj = Record<string, unknown>;
 type TEnum = Record<string, string | number>;
 
@@ -45,6 +43,65 @@ export const safeJsonParse = _safeJsonParse;
 // **** Helpers **** //
 
 /**
+ * Do a validator callback function for each object entry.
+ */
+function _iterateObjEntries<T = NonNullable<object>>(
+  cb: (key: string, val: unknown) => boolean,
+): (arg: unknown) => arg is T {
+  return (arg: unknown): arg is T => {
+    if (isObj(arg)) {
+      for (const entry of Object.entries(arg)) {
+        if (!cb(entry[0], entry[1])) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+}
+
+/**
+ * Wrapper to check basic type.
+ */
+function _checkType<T>(type: string) {
+  return (arg: unknown): arg is T => {
+    return typeof arg === type && (type === 'object' ? (arg !== null) : true);
+  };
+}
+
+/**
+ * Transform a value before checking it.
+ */
+function _transform<T>(
+  transFn: (arg: unknown) => T,
+  vldt: ((arg: unknown) => arg is T),
+): TValidateWithTransform<T> {
+  return (arg: unknown, cb?: (arg: T) => void): arg is T => {
+    if (arg !== undefined) {
+      arg = transFn(arg);
+    }
+    cb?.(arg as T);
+    return vldt(arg);
+  };
+}
+
+/**
+ * Safe JSON parse
+ */
+function _safeJsonParse<T>(arg: unknown): T {
+  if (isStr(arg)) {
+    return JSON.parse(arg) as T;
+  } else {
+    throw Error('JSON parse argument must be a string');
+  }
+}
+
+
+// **** Enum Stuff **** //
+
+const _isStrEnum = _iterateObjEntries((key, val) => (isStr(key) && isStr(val)));
+
+/**
  * Check if unknown is a valid enum object.
  * NOTE: this does not work for mixed enums see: "eslint@typescript-eslint/no-mixed-enums"
  */
@@ -59,9 +116,7 @@ function _isEnum(arg: unknown): arg is TEnum {
     middle = Math.floor(keys.length / 2);
   // ** String Enum ** //
   if (!isNum(param[keys[middle]])) {
-    return _checkObjEntries(arg, (key, val) => {
-      return isStr(key) && isStr(val);
-    });
+    return _isStrEnum(arg);
   }
   // ** Number Enum ** //
   // Enum key length will always be even
@@ -120,59 +175,6 @@ function _isEnumVal<T,
   };
 }
 
-/**
- * Do a validator callback function for each object key/value pair.
- */
-function _checkObjEntries(
-  val: unknown,
-  cb: (key: string, val: unknown) => boolean,
-): val is NonNullable<object> {
-  if (isObj(val)) {
-    for (const entry of Object.entries(val)) {
-      if (!cb(entry[0], entry[1])) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-/**
- * Wrapper to check basic type.
- */
-function _checkType<T>(type: string) {
-  return (arg: unknown): arg is T => {
-    return typeof arg === type && (type === 'object' ? (arg !== null) : true);
-  };
-}
-
-/**
- * Transform a value before checking it.
- */
-function _transform<T>(
-  transFn: (arg: unknown) => T,
-  vldt: ((arg: unknown) => arg is T),
-): TValidateWithTransform<T> {
-  return (arg: unknown, cb?: (arg: T) => void): arg is T => {
-    if (arg !== undefined) {
-      arg = transFn(arg);
-    }
-    cb?.(arg as T);
-    return vldt(arg);
-  };
-}
-
-/**
- * Safe JSON parse
- */
-function _safeJsonParse<T>(arg: unknown): T {
-  if (isStr(arg)) {
-    return JSON.parse(arg) as T;
-  } else {
-    throw Error('JSON parse argument must be a string');
-  }
-}
-
 
 // **** Parse Object **** //
 
@@ -229,13 +231,13 @@ function _parseObj<
 /**
  * Validate the schema. 
  */
-function _parseObjCore(
+function _parseObjCore<A>(
   optional: boolean,
   nullable: boolean,
-  isArr: boolean,
+  isArr: A,
   schema: TSchema,
   arg: unknown,
-  onError?: TFunc,
+  onError?: TParseOnError<A>,
 ) {
   // Check "undefined"
   if (arg === undefined) {
@@ -272,9 +274,10 @@ function _parseObjCore(
       }
     }
     return resp;
-  }
   // Default
-  return _parseObjCoreHelper(schema, arg, onError);
+  } else {
+    return _parseObjCoreHelper(schema, arg, onError as TParseOnError<false>);
+  }
 }
 
 /**
