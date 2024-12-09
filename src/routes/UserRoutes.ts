@@ -1,7 +1,9 @@
+import { isNumber } from 'jet-validators';
+import { transform } from 'jet-validators/utils';
+
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import UserService from '@src/services/UserService';
 import User from '@src/models/User';
-import { isNum, transform } from '@src/util/validators';
 
 import { parseReq, IReq, IRes } from './common';
 
@@ -11,7 +13,7 @@ import { parseReq, IReq, IRes } from './common';
 const Validators = {
   add: parseReq({ user: User.test }),
   update: parseReq({ user: User.test }),
-  delete: parseReq({ id: transform(Number, isNum) }),
+  delete: parseReq({ id: transform(Number, isNumber) }),
 } as const;
 
 

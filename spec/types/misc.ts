@@ -13,5 +13,3 @@ export type TRes = Omit<Response, 'body'> & {
 
 // API Callback
 export type TApiCb = (res: TRes) => void;
-
-
