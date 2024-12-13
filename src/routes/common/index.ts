@@ -1,4 +1,5 @@
 import { Response, Request } from 'express';
+import { isObject } from 'jet-validators';
 import { parseObject, TSchema } from 'jet-validators/utils';
 
 import { ValidationErr } from '@src/common/route-errors';
@@ -17,9 +18,14 @@ export type IRes = Response<unknown, TRecord>;
  * Parse a Request object property and throw a Validation error if it fails.
  */
 export function parseReq<U extends TSchema>(schema: U) {
-  return parseObject<U>(schema, _parseReqOnError);
+  const parseFn = parseObject<U>(schema, _parseReqOnError);
+  return (arg: unknown) => {
+    if (isObject(arg)) {
+      arg = { ...arg };
+    }
+    return parseFn(arg);
+  };
 }
-
 /**
  * Error handler for the request parse function above.
  */
